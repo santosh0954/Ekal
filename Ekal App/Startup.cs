@@ -12,6 +12,7 @@ using Ekal_App.Data;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Microsoft.JSInterop;
 
 namespace Ekal_App
 {
@@ -32,18 +33,27 @@ namespace Ekal_App
             services.AddServerSideBlazor();
             //services.AddSingleton<WeatherForecastService>();
 
-            services.AddSingleton<StateService>();
-            services.AddSingleton<DistrictService>();
-            services.AddSingleton<RegionService>();
-            services.AddSingleton<SectorService>();
-            services.AddSingleton<VolunteerTypeService>();
-            services.AddSingleton<VolunteerService>();
-            services.AddSingleton<UnitService>();
             services.AddSingleton<BankService>();
             services.AddSingleton<CustomerService>();
+            services.AddSingleton<DistrictService>();
+            services.AddSingleton<EkaiService>();
+            services.AddSingleton<EkaiTypeService>();
+            services.AddSingleton<ItemProviderService>();
+            services.AddSingleton<ItemsService>();
+            services.AddSingleton<ItemStockService>();
+            services.AddSingleton<ProductFormulaDetailsService>();
+            services.AddSingleton<ProductFormulaService>();
+            services.AddSingleton<RegionService>();
+            services.AddSingleton<SectorService>();
+            services.AddSingleton<StateService>();
+            services.AddSingleton<TaskService>();
+            services.AddSingleton<UnitService>();
+            services.AddSingleton<VolunteerBankDetailsService>();
+            services.AddSingleton<VolunteerService>();
+            services.AddSingleton<VolunteerTypeService>();
 
-
-
+            //services.AddSingleton<JSRuntime>();
+                        
             services.AddBlazorise(option =>
             {
                 option.ChangeTextOnKeyPress = true;

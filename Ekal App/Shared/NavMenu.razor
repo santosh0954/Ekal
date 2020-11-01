@@ -16,8 +16,8 @@
         <BlazoredSubMenu Header="Master">
             <MenuTemplate>
                 <BlazoredMenuItem>
-                    <NavLink href="region">
-                        <i class="oi oi-circle-check mr-2" aria-hidden="true"></i>Region
+                    <NavLink href="ekai">
+                        <i class="oi oi-circle-check mr-2" aria-hidden="true"></i>Ekai
                     </NavLink>
                 </BlazoredMenuItem>
                 <BlazoredMenuItem>
@@ -41,13 +41,17 @@
                     </NavLink>
                 </BlazoredMenuItem>
                 <BlazoredMenuItem>
+                    <NavLink class="nav-link" href="item">
+                        <i class="oi oi-compass mr-2" aria-hidden="true"></i>Items
+                    </NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
                     <NavLink class="nav-link" href="bank">
                         <i class="oi oi-credit-card mr-2" aria-hidden="true"></i>Banks
                     </NavLink>
                 </BlazoredMenuItem>
             </MenuTemplate>
         </BlazoredSubMenu>
-
         <BlazoredSubMenu Header="Volunteer Management">
             <MenuTemplate>
                 <BlazoredMenuItem>
@@ -58,13 +62,51 @@
                 </BlazoredMenuItem>
             </MenuTemplate>
         </BlazoredSubMenu>
-        <BlazoredSubMenu Header="Customer Management">
+        <BlazoredSubMenu Header="Order Management">
+            <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="customer">Add Customer</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Show Customer</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Create Order</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Show Order</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Order Status</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Billing</NavLink>
+                </BlazoredMenuItem>
+            </MenuTemplate>
+        </BlazoredSubMenu>
+        <BlazoredSubMenu Header="Task Management">
             <MenuTemplate>
                 <BlazoredMenuItem>
                     <NavLink href="customer">Add</NavLink>
                 </BlazoredMenuItem>
                 <BlazoredMenuItem>
                     <NavLink href="customerList">List</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Summary</NavLink>
+                </BlazoredMenuItem>
+            </MenuTemplate>
+        </BlazoredSubMenu>
+        <BlazoredSubMenu Header="Stock Management">
+            <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="itemStockIn">Stock In</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Stock Transfer</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">Issue</NavLink>
                 </BlazoredMenuItem>
             </MenuTemplate>
         </BlazoredSubMenu>

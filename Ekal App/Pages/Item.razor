@@ -1,0 +1,123 @@
+﻿@page "/item";
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject ItemsService itemService;
+@inject UnitService unitService;
+
+<h3>Item</h3>
+<hr />
+
+@if (items != null)
+{
+    <form>
+        <table class="form-group">
+            <tr>
+                <td>
+                    <div class="input-group mb-3">
+                        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Item Name : </label>
+                        <input type="text" class="form-control" placeholder="Enter Item Name" @bind="@item" />
+
+                        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Unit : </label>
+                        <div class="col-lg-3 col-md-3 col-sm-10">
+                            <select class="form-control" @bind="@selectUnitID">
+                                @if (units != null)
+                                {
+                                    @foreach (var _unit in units)
+                                    {
+                                        <option value=@_unit.UnitId>@_unit.Unit</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <button @onclick="@Save" class="btn btn-warning">Add</button>                            
+                        </div>
+                    </div>
+                </td>
+            </tr>           
+        </table>
+    </form>
+}
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="align-self-auto">
+
+        <h5 class="text-primary">Total Records : @totalRecords</h5>
+        <table class="table table-bordered table-hover table-responsive table-striped pre-scrollable">
+            <thead>
+                <tr>
+                    <th class="d-none">ItemID</th>
+                    <th>ItemName</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in items)
+                {
+                    <tr>
+                        <td class="d-none">@item.ItemId</td>
+                        <td>@item.ItemName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    string itemID;
+    string item;
+
+    bool IsProductionRequired = false;
+    Int16 selectUnitID = 0;
+    int totalRecords = 0;
+
+    List<MstItems> items = null;
+
+    List<MstUnit> units = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsAsync();
+        await LoadUnitsAsync();
+    }
+
+    private async Task LoadItemsAsync()
+    {
+        items = await itemService.GetAsync();
+        totalRecords = items.Count();
+    }
+
+    private async Task LoadUnitsAsync()
+    {
+        units = await unitService.GetAsync();
+    }
+
+    public async Task Save()
+    {
+        MstItems entity = new MstItems();
+        entity.ItemName = item;
+        entity.UnitId = selectUnitID;
+        entity.IsProductionRequired = IsProductionRequired;
+
+        var response = await itemService.AddAsync(entity);
+        if (response)
+        {
+            await LoadItemsAsync();
+            ResetFields();
+        }
+    }
+
+    private void ResetFields()
+    {
+        itemID = null;
+        item = string.Empty;
+    }
+}
+
+
