@@ -1,0 +1,241 @@
+﻿@page "/volunteer"
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject VolunteerService volunteerService;
+@inject RegionService regionService;
+@inject StateService stateService;
+@inject DistrictService districtService; 
+
+<h3>Volunteer</h3>
+<hr />
+
+<form>   
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Name : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@FirstName">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@MiddleName">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@LastName">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Mobile No : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@MobileNo">
+        </div>
+        <label class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Alt No : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@AltMobileNo">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Gender : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="optradio" @bind="@GenderMale">Male
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="optradio" @bind="@GenderFemale">Female
+                </label>
+            </div>
+        </div>
+            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">DOB :</label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@DOB">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Aadhaar No : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="aadhaarNo" placeholder="Enter Aadhaar No" @bind="@AadhaarNo">
+        </div>
+        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Region : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <select class="form-control">
+                @if (regions != null)
+                {
+                    @foreach (var _region in regions)
+                    {
+                        <option value=@_region.RegionId>@_region.RegionName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">State : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <select class="form-control">
+                @if (states != null)
+                {
+                    @foreach (var _state in states)
+                    {
+                        <option value=@_state.StateCode>@_state.StateName</option>
+                    }
+                }
+            </select>
+        </div>
+        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">District : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <select class="form-control">
+                @if (districts != null)
+                {
+                    @foreach (var _district in districts)
+                    {
+                        <option value=@_district.DistrictCode>@_district.DistrictName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Communication : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@AddressLine1">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@AddressLine2">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@AddressLine3">
+        </div>
+    </div>
+    <div class="form-group row">
+
+        <div class="col-lg-3 col-md-3 col-sm-10 offset-2">
+            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@Tehsil">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@Pincode">
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
+            <button @onclick="@Save" class="btn btn-success px-5" >Save</button>
+        </div>
+        @*<div class="col-lg-3 col-md-3 col-sm-10">
+            <select class="form-control">
+                @foreach (var _class in classes)
+                {
+                    <option value=@_class.ClassName>@_class.ClassName</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <select class="form-control">
+                @foreach (var _class in classes)
+                {
+                    <option value=@_class.ClassName>@_class.ClassName</option>
+                }
+            </select>
+        </div>*@
+    </div>
+
+    
+</form>
+
+
+@code {
+
+    public int VolunteerID { get; set; }
+    public string FirstName { get; set; }
+    public string MiddleName { get; set; }
+    public string LastName { get; set; }
+    public DateTime DOB { get; set; }
+    public string MobileNo { get; set; }
+    public string AltMobileNo { get; set; }
+    public string GenderMale { get; set; }
+    public string GenderFemale { get; set; }
+    public string AadhaarNo { get; set; }
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string AddressLine3 { get; set; }
+    public string Tehsil { get; set; }
+    public string Pincode { get; set; }
+
+
+
+    List<MstRegion> regions = null;
+    List<MstStates> states = null;
+    List<MstDistricts> districts = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRegionAsync();
+        await LoadStatesAsync();
+        await LoadDistrictsAsync();
+
+    }
+
+    private async Task LoadRegionAsync()
+    {
+        regions = await regionService.GetAsync();
+    }
+
+    private async Task LoadStatesAsync()
+    {
+        states = await stateService.GetAsync();
+    }
+
+    private async Task LoadDistrictsAsync()
+    {
+        districts = await districtService.GetAsync();
+    }
+
+    public async Task Save()
+    {
+        TxnVolunteer entity = new TxnVolunteer();
+        entity.FirstName = FirstName;
+        entity.MiddleName = MiddleName;
+        entity.LastName = LastName;
+        entity.MobileNo = MobileNo;
+
+        if (!string.IsNullOrEmpty(GenderMale))
+            entity.Gender = "M";
+        else
+            entity.Gender = "F";
+
+        entity.Dob = DOB;
+
+        entity.AltMobileNo = AltMobileNo;
+        entity.AddressLine1 = AddressLine1;
+        entity.AddressLine2 = AddressLine2;
+        entity.AddressLine3 = AddressLine3;
+        entity.Tehsil = Tehsil;
+        entity.Pincode = Pincode;
+
+
+        var response = await volunteerService.AddAsync(entity);
+        if (response)
+        {
+            //await LoadAsync();
+            ResetFields();
+        }
+    }
+
+    private void ResetFields()
+    {
+        VolunteerID = 0;
+        FirstName = string.Empty;
+        MiddleName = string.Empty;
+        LastName = string.Empty;
+        MobileNo = string.Empty;
+        AltMobileNo = string.Empty;
+        AddressLine1 = string.Empty;
+        AddressLine2 = string.Empty;
+        AddressLine3 = string.Empty;
+        Pincode = string.Empty;
+    }
+}
+
+

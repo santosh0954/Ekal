@@ -1,0 +1,97 @@
+﻿@page "/volunteerType"
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject VolunteerTypeService service;
+
+<h3>Volunteer Type</h3>
+<hr />
+
+
+@if (entities != null)
+{
+    <form>
+        <table class="form-group">
+            <tr>
+                <td>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter Volunteer Type" @bind="@volunteerType" />
+                        <div class="input-group-append">
+                            <button @onclick="@Save" class="btn btn-warning">Add</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+}
+
+@if (entities == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="align-self-auto">
+
+        <h5 class="text-primary">Total Records : @totalRecords</h5>
+        <table class="table table-bordered table-hover table-responsive table-striped pre-scrollable">
+            <thead>
+                <tr>
+                    <th class="d-none">VolunteerTypeID</th>
+                    <th>VolunteerType</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entity in entities)
+                {
+                    <tr>
+                        <td class="d-none">@entity.VolunteerTypeId</td>
+                        <td>@entity.VolunteerType</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    string volunteerTypeID;
+    string volunteerType;
+
+    int totalRecords = 0;
+
+    List<MstVolunteerType> entities = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        entities = await service.GetAsync();
+        totalRecords = entities.Count();
+    }
+
+    public async Task Save()
+    {
+        MstVolunteerType entity = new MstVolunteerType();
+        entity.VolunteerType = volunteerType;
+
+
+        var response = await service.AddAsync(entity);
+        if (response)
+        {
+            await LoadAsync();
+            ResetFields();
+        }
+    }
+
+    private void ResetFields()
+    {
+        volunteerTypeID = null;
+        volunteerType = string.Empty;
+    }
+
+}
+

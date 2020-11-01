@@ -1,0 +1,54 @@
+﻿@page "/customerList"
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject CustomerService customerService;  
+
+<h3>Customers</h3>
+<hr />
+
+
+@if (customers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <DataGrid TItem="TxnCustomer" Data="@customers" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
+              Style="overflow-x:scroll" Bordered="true">
+
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.CustomerId)" Caption="VolunteerID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.FirstName)" Caption="FirstName"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.MiddleName)" Caption="MiddleName"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.LastName)" Caption="LastName"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.MobileNo)" Caption="MobileNo"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.AltMobileNo)" Caption="AltMobileNo"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.EMail)" Caption="eMail"></DataGridColumn>                           
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.AddressLine1)" Caption="AddressLine1"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.AddressLine2)" Caption="AddressLine2"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.AddressLine3)" Caption="AddressLine3"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.Tehsil)" Caption="Tehsil"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.Pincode)" Caption="Pincode"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.StateCode)" Caption="StateCode" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.DistrictCode)" Caption="DistrictCode" Displayable="false"></DataGridColumn>
+
+    </DataGrid>
+
+}
+
+
+@code {
+    int totalRecords = 0;
+    List<TxnCustomer> customers = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        customers = await customerService.GetAsync();
+        totalRecords = customers.Count();
+    }
+}

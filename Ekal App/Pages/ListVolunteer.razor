@@ -1,0 +1,68 @@
+﻿@page "/listVolunteer"
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@using Blazorise.DataGrid;
+
+@inject VolunteerService volunteerService;
+
+<h3>Volunteers List</h3>
+<hr />
+
+@if (volunteers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    
+    <DataGrid TItem="TxnVolunteer" Data="@volunteers" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
+              Style="overflow-x:scroll" Bordered="true">
+        
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.VolunteerId)" Caption="VolunteerID" Displayable="false"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.FirstName)" Caption="FirstName"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.MiddleName)" Caption="MiddleName"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.LastName)" Caption="LastName"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.MobileNo)" Caption="MobileNo"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.AltMobileNo)" Caption="AltMobileNo"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.Gender)" Caption="Gender"></DataGridColumn>
+            <DataGridNumericColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.Dob)" Caption="DOB">
+                <DisplayTemplate>
+                    @{
+                        var date = (context as TxnVolunteer)?.Dob;
+
+                        if (date != null)
+                        {
+                            @($"{date.Value.ToShortDateString()}")
+                        }
+                    }
+                </DisplayTemplate>
+            </DataGridNumericColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.AadhaarNo)" Caption="AadhaarNo"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.AddressLine1)" Caption="AddressLine1"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.AddressLine2)" Caption="AddressLine2"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.AddressLine3)" Caption="AddressLine3"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.Tehsil)" Caption="Tehsil"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.Pincode)" Caption="Pincode"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.StateCode)" Caption="StateCode" Displayable="false"></DataGridColumn>
+            <DataGridColumn TItem="TxnVolunteer" Field="@nameof(TxnVolunteer.DistrictCode)" Caption="DistrictCode" Displayable="false"></DataGridColumn>
+        
+    </DataGrid>
+    
+}
+
+
+@code {
+    int totalRecords = 0;
+    List<TxnVolunteer> volunteers = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        volunteers = await volunteerService.GetAsync();
+        totalRecords = volunteers.Count();
+    }
+}

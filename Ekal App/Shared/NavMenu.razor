@@ -1,0 +1,123 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Ekal Group</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div>
+    <BlazoredMenu Css="text-white">
+
+        <BlazoredMenuItem>
+            <NavLink class="nav-link" href="/">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Home
+            </NavLink>
+        </BlazoredMenuItem>
+        <BlazoredSubMenu Header="Master">
+            <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="region">
+                        <i class="oi oi-circle-check mr-2" aria-hidden="true"></i>Region
+                    </NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="state">
+                        <i class="oi oi-globe mr-2" aria-hidden="true"></i>State
+                    </NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="district">
+                        <i class="oi oi-map-marker mr-2" aria-hidden="true"></i>District
+                    </NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink class="nav-link" href="volunteerType">
+                        <i class="oi oi-person mr-2" aria-hidden="true"></i>Volunteer Type
+                    </NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink class="nav-link" href="unit">
+                        <i class="oi oi-compass mr-2" aria-hidden="true"></i>Units
+                    </NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink class="nav-link" href="bank">
+                        <i class="oi oi-credit-card mr-2" aria-hidden="true"></i>Banks
+                    </NavLink>
+                </BlazoredMenuItem>
+            </MenuTemplate>
+        </BlazoredSubMenu>
+
+        <BlazoredSubMenu Header="Volunteer Management">
+            <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="volunteer">Add</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="listVolunteer">List</NavLink>
+                </BlazoredMenuItem>
+            </MenuTemplate>
+        </BlazoredSubMenu>
+        <BlazoredSubMenu Header="Customer Management">
+            <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="customer">Add</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="customerList">List</NavLink>
+                </BlazoredMenuItem>
+            </MenuTemplate>
+        </BlazoredSubMenu>
+
+    </BlazoredMenu>
+</div>
+
+<!--<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">-->
+        @*<li class="nav-item px-3">
+            <NavLink class="nav-link d-flex justify-content-between" data-target="#state" Match="NavLinkMatch.All" data-toggle="collapse"
+                     role="button"
+                     aria-expanded="false">
+                <span><i class="fa fa-tachometer mr-2"></i> Dashboard</span>
+                <i class="fa fa-caret-down"></i>
+            </NavLink>
+            <ul class="submenu collapse" id="state">
+                <a href="#"> submenu 1 </a>
+                <a href="#"> submenu 2 </a>
+            </ul>
+        </li>
+        @*<li class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
+        </li>*@
+        
+
+        <!--<li class="nav-item px-3">
+            <NavLink class="nav-link" href="volunteer">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Volunteer
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="listVolunteer">
+                <span class="oi oi-list-rich" aria-hidden="true"></span>List Volunteer
+            </NavLink>
+        </li>
+    </ul>
+</div>-->
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
