@@ -1,0 +1,128 @@
+﻿@page "/itemFormulaDetails";
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+
+@inject ItemFormulaService formulaService;
+@inject ItemFormulaDetailsService formulaDetailsService;
+@inject ItemsService itemService;
+
+
+<h3>Formula Details</h3>
+<hr />
+
+
+@if (formulas == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <form>
+        <div class="form-group row">            
+            <label for="inputEmail3" class="col-lg-2 col-md-2 col-sm-10 col-form-label text-right">Formula : </label>
+            <div class="col-lg-2 col-md-2 col-sm-10">
+                <select id="ddlFormula" class="form-control" @bind="@selectedFormulaID">
+                    @if (formulas != null)
+                    {
+                        @foreach (var _formula in formulas)
+                        {
+                            <option value=@_formula.ItemFormulaId>@_formula.FormulaName</option>
+                        }
+                    }
+                </select>                
+            </div>
+            <div class="form-group row">
+                <label for="inputEmail3" class="col-lg-2 col-md-2 col-sm-10 col-form-label text-right">Item : </label>
+                <div class="col-lg-2 col-md-2 col-sm-10">
+                    <select id="ddlFormula" class="form-control" @bind="@selectedItemID">
+                        @if (items != null)
+                        {
+                            @foreach (var _item in items)
+                            {
+                                <option value=@_item.ItemId>@_item.ItemName</option>
+                            }
+                        }
+                    </select>
+                    <label for="inputEmail3" class="col-lg-2 col-md-2 col-sm-10 col-form-label text-right">Qty : </label>
+                    <input type="text" class="form-control" placeholder="Enter Qty" @bind="@itemQty" />
+                    <button @onclick="@AddItems" class="btn btn-warning">Add</button>
+                </div>
+            </div>
+
+            <div>
+                <DataGrid TItem="TxnItemFormulaDetails" Data="@lstFormulaDetails" Sortable="true" ShowPager="true" PageSize="10" Filterable="true"
+                          Style="overflow-x:scroll" Bordered="true">
+
+                    <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.ItemFormulaDetailsId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
+                    <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.SubItemId)" Caption="Item"></DataGridColumn>
+                    <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.Qty)" Caption="Qty"></DataGridColumn>                    
+                </DataGrid>
+            </div>
+            <div>
+                <button @onclick="@Save" class="btn btn-warning">Save</button>
+            </div>
+        </div>
+
+    </form>
+}
+
+@code {
+        decimal itemQty = 0;
+
+        int selectedFormulaID = 0;
+        int selectedItemID = 0;
+        List<TxnItemFormula> formulas = null;
+        List<MstItems> items = null;
+
+        List<TxnItemFormulaDetails> lstFormulaDetails = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemFormulaAsync();
+        await LoadItemsAsync();
+    }
+
+    private async Task LoadItemFormulaAsync()
+    {
+        formulas = await formulaService.GetAsync();
+
+    }
+    private async Task LoadItemsAsync()
+    {
+        items = await itemService.GetAsync();
+
+    }
+
+    public async Task Save()
+    {
+        if (lstFormulaDetails != null)
+        {
+            var response = await formulaDetailsService.AddRangeAsync(lstFormulaDetails);
+            if (response)
+            {
+                await LoadItemsAsync();
+                ResetFields();
+            }
+        }
+    }
+
+    private void ResetFields()
+    {
+        selectedFormulaID = 0;
+        selectedItemID = 0;
+        itemQty= 0;
+    }
+
+    public void AddItems()
+    {
+        if (lstFormulaDetails == null)
+            lstFormulaDetails = new List<TxnItemFormulaDetails>();
+
+        TxnItemFormulaDetails entity = new TxnItemFormulaDetails();
+        entity.ItemFormulaId = selectedFormulaID;
+        entity.SubItemId = selectedItemID;
+        entity.Qty = itemQty;
+
+        lstFormulaDetails.Add(entity);
+    }
+}

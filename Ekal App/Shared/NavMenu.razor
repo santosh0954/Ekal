@@ -13,6 +13,16 @@
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Home
             </NavLink>
         </BlazoredMenuItem>
+        <BlazoredSubMenu Header="Admin">
+            <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="itemFormula">Item Formula</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="itemFormulaDetails">Formula Details</NavLink>
+                </BlazoredMenuItem>                
+            </MenuTemplate>
+        </BlazoredSubMenu>
         <BlazoredSubMenu Header="Master">
             <MenuTemplate>
                 <BlazoredMenuItem>
@@ -87,7 +97,7 @@
         <BlazoredSubMenu Header="Task Management">
             <MenuTemplate>
                 <BlazoredMenuItem>
-                    <NavLink href="customer">Add</NavLink>
+                    <NavLink href="tasks">Add</NavLink>
                 </BlazoredMenuItem>
                 <BlazoredMenuItem>
                     <NavLink href="customerList">List</NavLink>
@@ -99,6 +109,12 @@
         </BlazoredSubMenu>
         <BlazoredSubMenu Header="Stock Management">
             <MenuTemplate>
+                <BlazoredMenuItem>
+                    <NavLink href="itemProvider">Item Providers</NavLink>
+                </BlazoredMenuItem>
+                <BlazoredMenuItem>
+                    <NavLink href="itemProviderList">Show Providers</NavLink>
+                </BlazoredMenuItem>
                 <BlazoredMenuItem>
                     <NavLink href="itemStockIn">Stock In</NavLink>
                 </BlazoredMenuItem>

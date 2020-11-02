@@ -1,0 +1,104 @@
+﻿@page "/tasks";
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject TaskService taskService;
+@inject ItemsService itemService;
+
+<h3>Task</h3>
+<hr />
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>    
+}
+else
+{
+    <form>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Task Name : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="taskName" placeholder="Enter Task Name" @bind="@taskName">
+            </div>
+
+            <label for="inputEmail3" class="col-sm-3 col-form-label">Work Type : </label>
+            <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" @bind-CheckedValue="@workType">
+                <Radio TValue="string" Value="@("G")">Group Based</Radio>
+                <Radio TValue="string" Value="@("I")">Individual</Radio>                
+            </RadioGroup>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Item : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <select id="ddlItems" class="form-control" @bind="@selectedItemID">
+                    @if (items != null)
+                    {
+                        @foreach (var _item in items)
+                        {
+                            <option value=@_item.ItemId>@_item.ItemName</option>
+                        }
+                    }
+                </select>
+
+                <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">For Qty : </label>
+                <input type="text" class="form-control" placeholder="Enter Qty" @bind="@qty" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Est. Start Date :</label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@estimatedStartDate">
+            </div>
+
+            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Est. End Date :</label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@estimatedEndDate">
+            </div>
+        </div>
+    </form>
+}
+
+@code {
+
+    string taskName = string.Empty;
+    string workType = string.Empty;
+    int selectedItemID = 0;
+    int qty = 0;
+    DateTime estimatedStartDate, estimatedEndDate;
+
+    List<TxnTasks> tasks = null;
+    List<MstItems> items = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsAsync();
+    }
+
+    private async Task LoadItemsAsync()
+    {
+        items = await itemService.GetAsync();
+    }
+
+    public async Task Save()
+    {
+        TxnTasks entity = new TxnTasks();
+        entity.TaskName = taskName;
+        entity.ForItemId = selectedItemID;
+        entity.ForQty = qty;
+        entity.EstimatedStartDate = estimatedStartDate;
+        entity.EstimatedEndDate = estimatedEndDate;
+
+        var response = await taskService.AddAsync(entity);
+        if (response)
+        {
+            //await LoadAsync();
+            ResetFields();
+        }
+    }
+
+    private void ResetFields()
+    {
+        selectedItemID = 0;
+        taskName = string.Empty;
+        qty = 0;        
+    }
+}

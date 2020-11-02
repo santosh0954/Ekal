@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace EkalEntities.Models
 {
-    public partial class TxnProductionFormulaDetails
+    public partial class TxnItemFormulaDetails
     {
-        public int ProductionFormulaDetailsId { get; set; }
-        public int? ProductionFormulaId { get; set; }
+        public int ItemFormulaDetailsId { get; set; }
+        public int? ItemFormulaId { get; set; }
         public int? SubItemId { get; set; }
         public decimal? Qty { get; set; }
         public DateTime? CreatedDate { get; set; }

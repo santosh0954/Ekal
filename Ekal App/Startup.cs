@@ -41,8 +41,8 @@ namespace Ekal_App
             services.AddSingleton<ItemProviderService>();
             services.AddSingleton<ItemsService>();
             services.AddSingleton<ItemStockService>();
-            services.AddSingleton<ProductFormulaDetailsService>();
-            services.AddSingleton<ProductFormulaService>();
+            services.AddSingleton<ItemFormulaDetailsService>();
+            services.AddSingleton<ItemFormulaService>();
             services.AddSingleton<RegionService>();
             services.AddSingleton<SectorService>();
             services.AddSingleton<StateService>();

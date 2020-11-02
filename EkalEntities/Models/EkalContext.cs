@@ -26,10 +26,10 @@ namespace EkalEntities.Models
         public virtual DbSet<MstUnit> MstUnit { get; set; }
         public virtual DbSet<MstVolunteerType> MstVolunteerType { get; set; }
         public virtual DbSet<TxnCustomer> TxnCustomer { get; set; }
+        public virtual DbSet<TxnItemFormula> TxnItemFormula { get; set; }
+        public virtual DbSet<TxnItemFormulaDetails> TxnItemFormulaDetails { get; set; }
         public virtual DbSet<TxnItemProvider> TxnItemProvider { get; set; }
         public virtual DbSet<TxnItemStock> TxnItemStock { get; set; }
-        public virtual DbSet<TxnProductionFormula> TxnProductionFormula { get; set; }
-        public virtual DbSet<TxnProductionFormulaDetails> TxnProductionFormulaDetails { get; set; }
         public virtual DbSet<TxnTasks> TxnTasks { get; set; }
         public virtual DbSet<TxnVolunteer> TxnVolunteer { get; set; }
         public virtual DbSet<TxnVolunteerAttendance> TxnVolunteerAttendance { get; set; }
@@ -279,6 +279,40 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<TxnItemFormula>(entity =>
+            {
+                entity.HasKey(e => e.ItemFormulaId)
+                    .HasName("PK_TxnProductionFormula");
+
+                entity.Property(e => e.ItemFormulaId).HasColumnName("ItemFormulaID");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ForQty).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.FormulaName)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ItemId).HasColumnName("ItemID");
+            });
+
+            modelBuilder.Entity<TxnItemFormulaDetails>(entity =>
+            {
+                entity.HasKey(e => e.ItemFormulaDetailsId)
+                    .HasName("PK_TxnProductionFormulaDetails");
+
+                entity.Property(e => e.ItemFormulaDetailsId).HasColumnName("ItemFormulaDetailsID");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ItemFormulaId).HasColumnName("ItemFormulaID");
+
+                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.SubItemId).HasColumnName("SubItemID");
+            });
+
             modelBuilder.Entity<TxnItemProvider>(entity =>
             {
                 entity.HasKey(e => e.ItemProviderId);
@@ -361,42 +395,14 @@ namespace EkalEntities.Models
 
                 entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.Rate).HasColumnType("decimal(18, 2)");
+
                 entity.Property(e => e.Status)
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
-            });
 
-            modelBuilder.Entity<TxnProductionFormula>(entity =>
-            {
-                entity.HasKey(e => e.ProductionFormulaId);
-
-                entity.Property(e => e.ProductionFormulaId).HasColumnName("ProductionFormulaID");
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ForQty).HasColumnType("decimal(18, 2)");
-
-                entity.Property(e => e.FormulaName)
-                    .HasMaxLength(128)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ItemId).HasColumnName("ItemID");
-            });
-
-            modelBuilder.Entity<TxnProductionFormulaDetails>(entity =>
-            {
-                entity.HasKey(e => e.ProductionFormulaDetailsId);
-
-                entity.Property(e => e.ProductionFormulaDetailsId).HasColumnName("ProductionFormulaDetailsID");
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ProductionFormulaId).HasColumnName("ProductionFormulaID");
-
-                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
-
-                entity.Property(e => e.SubItemId).HasColumnName("SubItemID");
+                entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
             });
 
             modelBuilder.Entity<TxnTasks>(entity =>

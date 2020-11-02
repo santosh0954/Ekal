@@ -1,0 +1,88 @@
+﻿@page "/itemFormula";
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject ItemsService itemService;
+@inject ItemFormulaService itemFormulaService;
+
+
+<h3>Item Formula</h3>
+
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+@if (items != null)
+{
+    <form>
+                                    
+        <div class="input-group mb-3">
+            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Formula Name : </label>
+            <input type="text" class="form-control" placeholder="Enter Formula Name" @bind="@formulaName" />
+
+            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Item : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <select id="ddlItems" class="form-control" @bind="@selectedItemID">
+                    @if (items != null)
+                    {
+                        @foreach (var _item in items)
+                        {
+                            <option value=@_item.ItemId>@_item.ItemName</option>
+                        }
+                    }
+                </select>
+
+                <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">For Qty : </label>
+                <input type="text" class="form-control" placeholder="Enter Qty" @bind="@forQty" />
+            </div>
+            <div>
+                <button @onclick="@Save" class="btn btn-warning">Add</button>
+            </div>
+        </div>
+                                  
+    </form>
+}
+
+
+@code {
+    int forQty = 0;
+    string formulaName = string.Empty;
+    List<TxnItemFormula> itemFormula = null;
+    List<MstItems> items = null;
+
+    int selectedItemID = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsAsync();
+    }
+
+    private async Task LoadItemsAsync()
+    {
+        items = await itemService.GetAsync();
+    }
+
+    public async Task Save()
+    {
+        TxnItemFormula entity = new TxnItemFormula();
+        entity.FormulaName = formulaName;
+        entity.ItemId = selectedItemID;
+        entity.ForQty = forQty;
+
+
+        var response = await itemFormulaService.AddAsync(entity);
+        if (response)
+        {
+            await LoadItemsAsync();
+            ResetFields();
+        }
+    }
+
+    private void ResetFields()
+    {
+        forQty = 0;
+        formulaName = string.Empty;
+        selectedItemID = 0;
+    }
+
+}

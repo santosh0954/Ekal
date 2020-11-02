@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace EkalEntities.Models
 {
-    public partial class TxnProductionFormula
+    public partial class TxnItemFormula
     {
-        public int ProductionFormulaId { get; set; }
+        public int ItemFormulaId { get; set; }
         public int? ItemId { get; set; }
         public string FormulaName { get; set; }
         public decimal? ForQty { get; set; }

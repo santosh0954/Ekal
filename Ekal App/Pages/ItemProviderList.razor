@@ -1,0 +1,52 @@
+﻿@page "/itemProviderList";
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject ItemProviderService itemProviderService;
+
+<h3>Provider List</h3>
+<hr />
+
+@if (itemProviders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <DataGrid TItem="TxnItemProvider" Data="@itemProviders" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
+              Style="overflow-x:scroll" Bordered="true">
+
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.ItemProviderId)" Caption="ItemProviderID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.FirstName)" Caption="FirstName"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.MiddleName)" Caption="MiddleName"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.LastName)" Caption="LastName"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.MobileNo)" Caption="MobileNo"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AltMobileNo)" Caption="AltMobileNo"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.EMail)" Caption="eMail"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AddressLine1)" Caption="AddressLine1"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AddressLine2)" Caption="AddressLine2"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AddressLine3)" Caption="AddressLine3"></DataGridColumn>        
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.Pincode)" Caption="Pincode"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.StateCode)" Caption="StateCode" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.DistrictCode)" Caption="DistrictCode" Displayable="false"></DataGridColumn>
+
+    </DataGrid>
+
+}
+
+@code {
+
+    int totalRecords = 0;
+    List<TxnItemProvider> itemProviders = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        itemProviders = await itemProviderService.GetAsync();
+        totalRecords = itemProviders.Count();
+    }
+}

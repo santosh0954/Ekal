@@ -8,6 +8,8 @@ namespace EkalEntities.Models
         public int ItemStockId { get; set; }
         public int? ItemId { get; set; }
         public decimal? Qty { get; set; }
+        public decimal? Rate { get; set; }
+        public decimal? TotalAmount { get; set; }
         public int? ItemProviderId { get; set; }
         public int? EkaiId { get; set; }
         public string Status { get; set; }
