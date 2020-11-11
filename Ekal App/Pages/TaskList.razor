@@ -1,0 +1,47 @@
+﻿@page "/taskList";
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject TaskService taskService; 
+ 
+<h3>Task List</h3>
+<hr />
+
+
+@if (tasks == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <DataGrid TItem="TxnTasks" Data="@tasks" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
+              Style="overflow-x:scroll" Bordered="true">
+
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.TaskId)" Caption="TaskID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.TaskName)" Caption="TaskName"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.ForItemId)" Caption="ForItemID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.ForQty)" Caption="ForQty"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.WorkType)" Caption="WorkType"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.EstimatedStartDate)" Caption="EstStartDate"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.EstimatedEndDate)" Caption="EstEndDate"></DataGridColumn>
+        
+    </DataGrid>
+
+}
+
+
+@code {
+    int totalRecords = 0;
+    List<TxnTasks> tasks = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        tasks = await taskService.GetAsync();
+        totalRecords = tasks.Count();
+    }
+}

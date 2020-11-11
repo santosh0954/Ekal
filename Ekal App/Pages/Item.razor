@@ -9,34 +9,32 @@
 
 @if (items != null)
 {
-    <form>
-        <table class="form-group">
-            <tr>
-                <td>
-                    <div class="input-group mb-3">
-                        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Item Name : </label>
-                        <input type="text" class="form-control" placeholder="Enter Item Name" @bind="@item" />
+<form>
+    <div class="form-row">
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <label for="inputEmail3" class=" col-form-label text-right">Item Name : </label>
+            <input type="text" class="form-control" placeholder="Enter Item Name" @bind="@item" />
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <label for="inputEmail3" class="col-form-label text-right">Unit : </label>
 
-                        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Unit : </label>
-                        <div class="col-lg-3 col-md-3 col-sm-10">
-                            <select class="form-control" @bind="@selectUnitID">
-                                @if (units != null)
-                                {
-                                    @foreach (var _unit in units)
-                                    {
-                                        <option value=@_unit.UnitId>@_unit.Unit</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                        <div>
-                            <button @onclick="@Save" class="btn btn-warning">Add</button>                            
-                        </div>
-                    </div>
-                </td>
-            </tr>           
-        </table>
-    </form>
+            <div class="input-group mb-3">
+                <select class="form-control" @bind="@selectUnitID">
+                    @if (units != null)
+                    {
+                        @foreach (var _unit in units)
+                        {
+                            <option value=@_unit.UnitId>@_unit.Unit</option>
+                        }
+                    }
+                </select>
+                <div class="input-group-append">
+                    <button @onclick="@Save" class="btn btn-warning">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 }
 
 @if (items == null)
@@ -53,15 +51,17 @@ else
                 <tr>
                     <th class="d-none">ItemID</th>
                     <th>ItemName</th>
+                    <th>Unit</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in items)
                 {
-                    <tr>
-                        <td class="d-none">@item.ItemId</td>
-                        <td>@item.ItemName</td>
-                    </tr>
+                <tr>
+                    <td class="d-none">@item.ItemId</td>
+                    <td>@item.ItemName</td>
+                    <td>@item.Unit</td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -76,7 +76,7 @@ else
     Int16 selectUnitID = 0;
     int totalRecords = 0;
 
-    List<MstItems> items = null;
+    List<VItems> items = null;
 
     List<MstUnit> units = null;
 
@@ -89,7 +89,8 @@ else
 
     private async Task LoadItemsAsync()
     {
-        items = await itemService.GetAsync();
+        items = await itemService.GetViewAsync();
+        StateHasChanged();
         totalRecords = items.Count();
     }
 

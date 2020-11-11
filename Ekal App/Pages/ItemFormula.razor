@@ -6,7 +6,7 @@
 
 
 <h3>Item Formula</h3>
-
+<hr />
 
 @if (items == null)
 {
@@ -14,33 +14,39 @@
 }
 @if (items != null)
 {
-    <form>
-                                    
-        <div class="input-group mb-3">
-            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Formula Name : </label>
+<form>
+
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label text-right">Formula Name : </label>
             <input type="text" class="form-control" placeholder="Enter Formula Name" @bind="@formulaName" />
-
-            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Item : </label>
-            <div class="col-lg-3 col-md-3 col-sm-10">
-                <select id="ddlItems" class="form-control" @bind="@selectedItemID">
-                    @if (items != null)
-                    {
-                        @foreach (var _item in items)
-                        {
-                            <option value=@_item.ItemId>@_item.ItemName</option>
-                        }
-                    }
-                </select>
-
-                <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">For Qty : </label>
-                <input type="text" class="form-control" placeholder="Enter Qty" @bind="@forQty" />
-            </div>
-            <div>
-                <button @onclick="@Save" class="btn btn-warning">Add</button>
-            </div>
         </div>
-                                  
-    </form>
+     </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label text-right">Item : </label>
+            <select id="ddlItems" class="form-control" @bind="@selectedItemID">
+                @if (items != null)
+                {
+                    @foreach (var _item in items)
+                    {
+                        <option value=@_item.ItemId>@_item.ItemName</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label text-right">For Qty : </label>
+            <input type="text" class="form-control" placeholder="Enter Qty" @bind="@forQty" />
+        </div>
+        <div class="col-sm-4" style="padding-top: 37px">
+            
+            <button @onclick="@Save" class="btn btn-warning px-5">Add</button>
+        </div>
+    </div>
+
+</form>
 }
 
 

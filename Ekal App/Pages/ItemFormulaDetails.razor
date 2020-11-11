@@ -17,53 +17,57 @@
 }
 else
 {
-    <form>
-        <div class="form-group row">            
-            <label for="inputEmail3" class="col-lg-2 col-md-2 col-sm-10 col-form-label text-right">Formula : </label>
-            <div class="col-lg-2 col-md-2 col-sm-10">
-                <select id="ddlFormula" class="form-control" @bind="@selectedFormulaID">
-                    @if (formulas != null)
+<form>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class=" col-form-label text-right">Formula : </label>
+            <select id="ddlFormula" class="form-control" @bind="@selectedFormulaID">
+                @if (formulas != null)
+                {
+                    @foreach (var _formula in formulas)
                     {
-                        @foreach (var _formula in formulas)
-                        {
-                            <option value=@_formula.ItemFormulaId>@_formula.FormulaName</option>
-                        }
+                        <option value=@_formula.ItemFormulaId>@_formula.FormulaName</option>
                     }
-                </select>                
-            </div>
-            <div class="form-group row">
-                <label for="inputEmail3" class="col-lg-2 col-md-2 col-sm-10 col-form-label text-right">Item : </label>
-                <div class="col-lg-2 col-md-2 col-sm-10">
-                    <select id="ddlFormula" class="form-control" @bind="@selectedItemID">
-                        @if (items != null)
-                        {
-                            @foreach (var _item in items)
-                            {
-                                <option value=@_item.ItemId>@_item.ItemName</option>
-                            }
-                        }
-                    </select>
-                    <label for="inputEmail3" class="col-lg-2 col-md-2 col-sm-10 col-form-label text-right">Qty : </label>
-                    <input type="text" class="form-control" placeholder="Enter Qty" @bind="@itemQty" />
-                    <button @onclick="@AddItems" class="btn btn-warning">Add</button>
-                </div>
-            </div>
-
-            <div>
-                <DataGrid TItem="TxnItemFormulaDetails" Data="@lstFormulaDetails" Sortable="true" ShowPager="true" PageSize="10" Filterable="true"
-                          Style="overflow-x:scroll" Bordered="true">
-
-                    <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.ItemFormulaDetailsId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
-                    <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.SubItemId)" Caption="Item"></DataGridColumn>
-                    <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.Qty)" Caption="Qty"></DataGridColumn>                    
-                </DataGrid>
-            </div>
-            <div>
-                <button @onclick="@Save" class="btn btn-warning">Save</button>
-            </div>
+                }
+            </select>
         </div>
+        </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class=" col-form-label text-right">Item : </label>
+            <select id="ddlFormula" class="form-control" @bind="@selectedItemID">
+                @if (items != null)
+                {
+                    @foreach (var _item in items)
+                    {
+                        <option value=@_item.ItemId>@_item.ItemName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputEmail3" class=" col-form-label text-right">Qty : </label>
+            <input type="text" class="form-control" placeholder="Enter Qty" @bind="@itemQty" />
+        </div>
+        <div class="col-sm-4" style="padding-top: 37px">
+            <button @onclick="@AddItems" class="btn btn-warning px-4">Add</button>
 
-    </form>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <DataGrid TItem="TxnItemFormulaDetails" Data="@lstFormulaDetails" Sortable="true" ShowPager="true" PageSize="10" Filterable="true"
+                  Style="overflow-x:scroll" Bordered="true">
+
+            <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.ItemFormulaDetailsId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
+            <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.SubItemId)" Caption="Item"></DataGridColumn>
+            <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.Qty)" Caption="Qty"></DataGridColumn>
+        </DataGrid>
+    </div>
+    <button @onclick="@Save" class="btn btn-warning">Save</button>
+
+
+</form>
 }
 
 @code {

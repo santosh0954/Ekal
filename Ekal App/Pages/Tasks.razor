@@ -13,48 +13,59 @@
 }
 else
 {
-    <form>
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Task Name : </label>
-            <div class="col-lg-3 col-md-3 col-sm-10">
-                <input type="text" class="form-control" id="taskName" placeholder="Enter Task Name" @bind="@taskName">
-            </div>
+<form>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label class="col-form-label">Task Name : </label>
+            <input type="text" class="form-control" id="taskName" placeholder="Enter Task Name" @bind="@taskName">
 
-            <label for="inputEmail3" class="col-sm-3 col-form-label">Work Type : </label>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label">Work Type : </label>
+
             <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" @bind-CheckedValue="@workType">
                 <Radio TValue="string" Value="@("G")">Group Based</Radio>
-                <Radio TValue="string" Value="@("I")">Individual</Radio>                
+                <Radio TValue="string" Value="@("I")">Individual</Radio>
             </RadioGroup>
+
         </div>
-        <div class="form-group row">
-            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Item : </label>
-            <div class="col-lg-3 col-md-3 col-sm-10">
-                <select id="ddlItems" class="form-control" @bind="@selectedItemID">
-                    @if (items != null)
+    </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label text-right">Item : </label>
+            <select id="ddlItems" class="form-control" @bind="@selectedItemID">
+                @if (items != null)
+                {
+                    @foreach (var _item in items)
                     {
-                        @foreach (var _item in items)
-                        {
-                            <option value=@_item.ItemId>@_item.ItemName</option>
-                        }
+                        <option value=@_item.ItemId>@_item.ItemName</option>
                     }
-                </select>
-
-                <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">For Qty : </label>
-                <input type="text" class="form-control" placeholder="Enter Qty" @bind="@qty" />
-            </div>
+                }
+            </select>
         </div>
-        <div class="form-group row">
-            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Est. Start Date :</label>
-            <div class="col-lg-3 col-md-3 col-sm-10">
-                <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@estimatedStartDate">
-            </div>
+        <div class="col-sm-4">
 
-            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Est. End Date :</label>
-            <div class="col-lg-3 col-md-3 col-sm-10">
-                <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@estimatedEndDate">
-            </div>
+            <label for="inputEmail3" class="col-form-label text-right">For Qty : </label>
+            <input type="text" class="form-control" placeholder="Enter Qty" @bind="@qty" />
+
         </div>
-    </form>
+    </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label text-right">Est. Start Date :</label>
+            <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@estimatedStartDate">
+        </div>
+        <div class="col-sm-4">
+            <label for="inputEmail3" class=" col-form-label text-right">Est. End Date :</label>
+            <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@estimatedEndDate">
+        </div>
+        <div class="col-sm-4" style="padding-top: 37px">
+            <button @onclick="@Save" class="btn btn-warning">Save</button>
+        </div>
+
+       
+    </div>
+</form>
 }
 
 @code {

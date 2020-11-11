@@ -17,6 +17,14 @@ namespace Ekal_App.Data
             }
         }
 
+        public async Task<List<VEkai>> GetViewAsync()
+        {
+            using (EkalContext dbContext = new EkalContext())
+            {
+                return await dbContext.VEkai.ToListAsync();
+            }
+        }
+
         public async Task<MstEkai> GetAsync(int id)
         {
             using (EkalContext dbContext = new EkalContext())

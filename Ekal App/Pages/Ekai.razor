@@ -2,94 +2,105 @@
 @using EkalEntities.Models;
 @using Ekal_App.Data;
 @inject EkaiService ekaiService;
-@inject IJSRuntime JsRuntime;
+
 
 <h3>Ekai</h3>
 <hr />
 
 @if (entities != null)
 {
-    <form>
-        <div class="form-group row">
-            <div>
+<form>
 
-                <div class="form-group row">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Select Ekai : </label>
-                    <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
-                        <Radio TValue="string" Value="@("1")">Prabhag</Radio>
-                        <Radio TValue="string" Value="@("2")">Sambhag</Radio>
-                        <Radio TValue="string" Value="@("3")">Bhag</Radio>
-                        <Radio TValue="string" Value="@("4")">Anchal</Radio>
-                        <Radio TValue="string" Value="@("5")">Sanch</Radio>
-                        <Radio TValue="string" Value="@("6")">Gram Sangathan</Radio>
-                    </RadioGroup>
-                </div>
 
-                <div class="form-group row">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Select Prabhag : </label>
-                    <select id="ddlPrabhag" class="form-control" disabled="@DisablePrabhag" @onchange="ddlPrabhag_SelectedIndexChanged">
-                        @if (prabhags != null)
-                        {
-                            @foreach (var _prabhag in prabhags)
-                            {
-                                <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
-                            }
-                        }
-                    </select>
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Select Sambhag : </label>
-                    <select id="ddlSambhag" class="form-control" disabled="@DisableSambhag" @onchange="ddlSambhag_SelectedIndexChanged">
-                        @if (sambhags != null)
-                        {
-                            @foreach (var _data in sambhags)
-                            {
-                                <option value=@_data.EkaiId>@_data.EkaiName</option>
+    <div class="form-row">
+        <label for="inputEmail3" class="mr-2">Select Ekai : </label>
+        <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
+            <Radio TValue="string" Value="@("1")">Prabhag</Radio>
+            <Radio TValue="string" Value="@("2")">Sambhag</Radio>
+            <Radio TValue="string" Value="@("3")">Bhag</Radio>
+            <Radio TValue="string" Value="@("4")">Anchal</Radio>
+            <Radio TValue="string" Value="@("5")">Sanch</Radio>
+            <Radio TValue="string" Value="@("6")">Gram Sangathan</Radio>
+        </RadioGroup>
+    </div>
 
-                            }
-                        }
-                    </select>
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Select Bhag : </label>
-                    <select id="ddlBhag" class="form-control" disabled="@DisableBhag" @onchange="ddlBhag_SelectedIndexChanged">
-                        @if (bhags != null)
-                        {
-                            @foreach (var _data in bhags)
-                            {
-                                <option value=@_data.EkaiId>@_data.EkaiName</option>
-                            }
-                        }
-                    </select>
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Select Anchal : </label>
-                    <select id="ddlAnchal" class="form-control" disabled="@DisableAnchal" @onchange="ddlAnchal_SelectedIndexChanged">
-                        @if (anchals != null)
-                        {
-                            @foreach (var _data in anchals)
-                            {
-                                <option value=@_data.EkaiId>@_data.EkaiName</option>
-                            }
-                        }
-                    </select>
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Select Sanch : </label>
-                    <select id="ddlSanch" class="form-control" disabled="@DisableSanch" @onchange="ddlSanch_SelectedIndexChanged">
-                        @if (sanchs != null)
-                        {
-                            @foreach (var _data in sanchs)
-                            {
-                                <option value=@_data.EkaiId>@_data.EkaiName</option>
-                            }
-                        }
-                    </select>
-                </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label">Select Prabhag : </label>
 
-                <div>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Enter Ekai Name" @bind="@ekai" />
-                        <div class="input-group-append">
-                            <button @onclick="@Save" class="btn btn-warning">Add</button>
-                        </div>
-                    </div>
-                </div>
+            <select id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag" @onchange="ddlPrabhag_SelectedIndexChanged">
+                @if (prabhags != null)
+                {
+                    @foreach (var _prabhag in prabhags)
+                    {
+                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label">Select Sambhag : </label>
+            <select id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag" @onchange="ddlSambhag_SelectedIndexChanged">
+                @if (sambhags != null)
+                {
+                    @foreach (var _data in sambhags)
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label">Select Bhag : </label>
+            <select id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag" @onchange="ddlBhag_SelectedIndexChanged">
+                @if (bhags != null)
+                {
+                    @foreach (var _data in bhags)
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label">Select Anchal : </label>
+            <select id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal" @onchange="ddlAnchal_SelectedIndexChanged">
+                @if (anchals != null)
+                {
+                    @foreach (var _data in anchals)
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="inputEmail3" class="col-form-label">Select Sanch : </label>
+            <select id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch" @onchange="ddlSanch_SelectedIndexChanged">
+                @if (sanchs != null)
+                {
+                    @foreach (var _data in sanchs)
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col-sm-4 input-group my-3">
+            <input type="text" class="form-control" placeholder="Enter Ekai Name" @bind="@ekai" />
+            <div class="input-group-append">
+                <button @onclick="@Save" class="btn btn-warning">Add</button>
             </div>
         </div>
-    </form>
+    </div>
+
+</form>
 }
 
 @if (entities == null)
@@ -104,17 +115,26 @@ else
         <table class="table table-bordered table-hover table-responsive table-striped pre-scrollable">
             <thead>
                 <tr>
-                    <th class="d-none">EkaiID</th>
-                    <th>Ekai</th>
+                    <th class="d-none">PrabhagId</th>
+                    <th>SrNo</th>
+                    <th>Prabhag</th>
+                    <th>Sambhag</th>
+                    <th>Bhag</th>
+                    <th>Anchal</th>
+                    <th>Sanch</th>
+                    <th>Gram Sangathan</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var entity in entities)
                 {
-                    <tr>
-                        <td class="d-none">@entity.EkaiId</td>
-                        <td>@entity.EkaiName</td>
-                    </tr>
+                <tr>
+                    <td class="d-none">@entity.PrabhagId</td>
+                    <td>@entity.SrNo</td>
+                    <td>@entity.Prabhag</td>
+                    <td>@entity.Sambhag</td>
+                    <td>@entity.Bhag</td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -125,7 +145,7 @@ else
     string ekaiID;
     string ekai;
     string selectedEkai = string.Empty;
-    int selectedParentID = 0;
+    int? selectedParentID = 0;
 
     int selectedPrabhagID = 0;
     int selectedSambhagID = 0;
@@ -142,7 +162,7 @@ else
     bool DisableSanch = true;
 
 
-    List<MstEkai> entities = null;
+    List<VEkai> entities = null;
 
     List<MstEkai> prabhags = null;
     List<MstEkai> sambhags = null;
@@ -158,43 +178,51 @@ else
 
     private async Task LoadAsync()
     {
-        entities = await ekaiService.GetAsync();
+        entities = await ekaiService.GetViewAsync();
         totalRecords = entities.Count();
+        StateHasChanged();
     }
 
     private async Task LoadPrabhagsAsync()
     {
-        prabhags = await ekaiService.GetAsync();
+        var allData = await ekaiService.GetAsync();
+        prabhags = allData.Where(x => x.EkaiTypeId == 1).ToList();
+        StateHasChanged();
     }
 
     private async Task LoadSamabhagsAsync(int prabhagID)
     {
         prabhags = await ekaiService.GetAsync();
         sambhags = prabhags.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
+        StateHasChanged();
     }
 
     private async Task LoadBhagsAsync(int sambhagID)
     {
         var allData = await ekaiService.GetAsync();
         bhags = prabhags.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
+        StateHasChanged();
     }
 
     private async Task LoadAnchalsAsync(int bhagID)
     {
         var allData = await ekaiService.GetAsync();
         anchals = prabhags.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
+        StateHasChanged();
     }
 
     private async Task LoadSanchsAsync(int anchalID)
     {
         var allData = await ekaiService.GetAsync();
         sanchs = prabhags.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
+        StateHasChanged();
     }
 
     private async Task LoadGramSangathansAsync(int sanchID)
     {
         var allData = await ekaiService.GetAsync();
         gramSangathan = prabhags.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
+        StateHasChanged();
     }
 
     public async Task Save()
@@ -209,6 +237,29 @@ else
             MstEkai entity = new MstEkai();
             entity.EkaiName = ekai;
             entity.EkaiTypeId = Convert.ToInt16(selectedEkai);
+
+            switch (Convert.ToInt16(selectedEkai))
+            {
+                case 1:
+                    selectedParentID = null;
+                    break;
+                case 2:
+                    selectedParentID = selectedPrabhagID;
+                    break;
+                case 3:
+                    selectedParentID = selectedSambhagID;
+                    break;
+                case 4:
+                    selectedParentID = selectedBhagID;
+                    break;
+                case 5:
+                    selectedParentID = selectedAnchalID;
+                    break;
+                case 6:
+                    selectedParentID = selectedSanchID;
+                    break;
+            }
+
             entity.ParentEkaiId = selectedParentID;
 
             var response = await ekaiService.AddAsync(entity);

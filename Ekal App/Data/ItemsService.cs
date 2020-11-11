@@ -17,6 +17,14 @@ namespace Ekal_App.Data
             }
         }
 
+        public async Task<List<VItems>> GetViewAsync()
+        {
+            using (EkalContext dbContext = new EkalContext())
+            {
+                return await dbContext.VItems.ToListAsync();
+            }
+        }
+
         public async Task<MstItems> GetAsync(int id)
         {
             using (EkalContext dbContext = new EkalContext())

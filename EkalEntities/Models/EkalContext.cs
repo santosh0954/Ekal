@@ -34,6 +34,8 @@ namespace EkalEntities.Models
         public virtual DbSet<TxnVolunteer> TxnVolunteer { get; set; }
         public virtual DbSet<TxnVolunteerAttendance> TxnVolunteerAttendance { get; set; }
         public virtual DbSet<TxnVolunteerBankDetails> TxnVolunteerBankDetails { get; set; }
+        public virtual DbSet<VEkai> VEkai { get; set; }
+        public virtual DbSet<VItems> VItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -545,6 +547,44 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.VolunteerId).HasColumnName("VolunteerID");
+            });
+
+            modelBuilder.Entity<VEkai>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vEkai");
+
+                entity.Property(e => e.Bhag)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Prabhag)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PrabhagId).HasColumnName("PrabhagID");
+
+                entity.Property(e => e.Sambhag)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VItems>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vItems");
+
+                entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+                entity.Property(e => e.ItemName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Unit)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);
