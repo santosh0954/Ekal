@@ -187,6 +187,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         prabhags = allData.Where(x => x.EkaiTypeId == 1).ToList();
+        prabhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -194,6 +195,7 @@ else
     {
         prabhags = await ekaiService.GetAsync();
         sambhags = prabhags.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
+        sambhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -201,6 +203,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         bhags = prabhags.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
+        bhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -208,6 +211,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         anchals = prabhags.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
+        anchals.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -215,6 +219,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         sanchs = prabhags.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
+        sanchs.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -222,6 +227,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         gramSangathan = prabhags.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
+        gramSangathan.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 

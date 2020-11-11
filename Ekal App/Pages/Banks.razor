@@ -2,6 +2,8 @@
 @using EkalEntities.Models;
 @using Ekal_App.Data;
 @inject BankService service; 
+@inject IToastService toastService;
+
 <h3>Banks</h3>
 <hr />
 
@@ -73,15 +75,23 @@ else
 
     public async Task Save()
     {
-        MstBank entity = new MstBank();
-        entity.BankName = bank;
-
-
-        var response = await service.AddAsync(entity);
-        if (response)
+        if (!string.IsNullOrEmpty(bank))
         {
-            await LoadAsync();
-            ResetFields();
+            MstBank entity = new MstBank();
+            entity.BankName = bank;
+
+
+            var response = await service.AddAsync(entity);
+            if (response)
+            {
+                await LoadAsync();
+                toastService.ShowSuccess("Bank added successfully.");    
+                ResetFields();
+            }
+        }
+        else
+        {
+            toastService.ShowWarning("Please enter bank name.");
         }
     }
 

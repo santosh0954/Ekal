@@ -2,6 +2,7 @@
 @using EkalEntities.Models;
 @using Ekal_App.Data;
 @inject VolunteerTypeService service;
+@inject IToastService toastService; 
 
 <h3>Volunteer Type</h3>
 <hr />
@@ -75,15 +76,22 @@ else
 
     public async Task Save()
     {
-        MstVolunteerType entity = new MstVolunteerType();
-        entity.VolunteerType = volunteerType;
-
-
-        var response = await service.AddAsync(entity);
-        if (response)
+        if (!string.IsNullOrEmpty(volunteerType))
         {
-            await LoadAsync();
-            ResetFields();
+            MstVolunteerType entity = new MstVolunteerType();
+            entity.VolunteerType = volunteerType;
+
+
+            var response = await service.AddAsync(entity);
+            if (response)
+            {
+                await LoadAsync();
+                ResetFields();
+            }
+        }
+        else
+        {
+            toastService.ShowWarning("Please enter Volunteer Type.");
         }
     }
 
@@ -92,6 +100,5 @@ else
         volunteerTypeID = null;
         volunteerType = string.Empty;
     }
-
 }
 

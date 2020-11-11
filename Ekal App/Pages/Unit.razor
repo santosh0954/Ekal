@@ -2,6 +2,7 @@
 @using EkalEntities.Models;
 @using Ekal_App.Data;
 @inject UnitService service;
+@inject IToastService toastService; 
  
 <h3>Unit</h3>
 <hr />
@@ -77,12 +78,18 @@ else
         MstUnit  entity = new MstUnit();
         entity.Unit = unit;
 
-
-        var response = await service.AddAsync(entity);
-        if (response)
+        if (!string.IsNullOrEmpty(unit))
         {
-            await LoadAsync();
-            ResetFields();
+            var response = await service.AddAsync(entity);
+            if (response)
+            {
+                await LoadAsync();
+                ResetFields();
+            }
+        }
+        else
+        {
+            toastService.ShowWarning("Please enter Unit.");
         }
     }
 

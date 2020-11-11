@@ -1,8 +1,11 @@
 ﻿@page "/item";
 @using EkalEntities.Models;
 @using Ekal_App.Data;
+
 @inject ItemsService itemService;
 @inject UnitService unitService;
+
+@inject IToastService toastService;
 
 <h3>Item</h3>
 <hr />
@@ -68,6 +71,7 @@ else
     </div>
 }
 
+
 @code {
     string itemID;
     string item;
@@ -90,27 +94,38 @@ else
     private async Task LoadItemsAsync()
     {
         items = await itemService.GetViewAsync();
-        StateHasChanged();
+        //StateHasChanged();
         totalRecords = items.Count();
     }
 
     private async Task LoadUnitsAsync()
     {
         units = await unitService.GetAsync();
+        units.Insert(0, new MstUnit { UnitId = 0, Unit = "SELECT" });
+
     }
 
     public async Task Save()
     {
-        MstItems entity = new MstItems();
-        entity.ItemName = item;
-        entity.UnitId = selectUnitID;
-        entity.IsProductionRequired = IsProductionRequired;
 
-        var response = await itemService.AddAsync(entity);
-        if (response)
+        if (selectUnitID == 0)
         {
-            await LoadItemsAsync();
-            ResetFields();
+            toastService.ShowError("Please select Unit.");
+        }
+        else
+        {
+
+            MstItems entity = new MstItems();
+            entity.ItemName = item;
+            entity.UnitId = selectUnitID;
+            entity.IsProductionRequired = IsProductionRequired;
+
+            var response = await itemService.AddAsync(entity);
+            if (response)
+            {
+                await LoadItemsAsync();
+                ResetFields();
+            }
         }
     }
 

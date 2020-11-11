@@ -13,6 +13,7 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.JSInterop;
+using Blazored.Toast;
 
 namespace Ekal_App
 {
@@ -51,6 +52,8 @@ namespace Ekal_App
             services.AddSingleton<VolunteerBankDetailsService>();
             services.AddSingleton<VolunteerService>();
             services.AddSingleton<VolunteerTypeService>();
+
+            services.AddBlazoredToast();
 
             //services.AddSingleton<JSRuntime>();
                         
