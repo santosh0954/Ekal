@@ -5,7 +5,7 @@
 @inject StateService stateService;
 @inject DistrictService districtService;
  
-<h3>ItemProvider</h3>
+<h3>Item Provider</h3>
 <hr />
 
 <form>
@@ -110,22 +110,22 @@
 
     string selectedProviderType = string.Empty;
 
-        
-
     protected override void OnInitialized()
     {
-         LoadStatesAsync();
-         LoadDistrictsAsync();
+        LoadStatesAsync();
+        LoadDistrictsAsync();
     }
 
     private async void LoadStatesAsync()
     {
         states = await stateService.GetAsync();
+        states.Insert(0, new MstStates { StateCode = "00", StateName = "SELECT" });
     }
 
     private async void LoadDistrictsAsync()
     {
         districts = await districtService.GetAsync();
+        districts.Insert(0, new MstDistricts { DistrictCode = "0000", DistrictName = "SELECT" });
     }
 
     public async void Save()

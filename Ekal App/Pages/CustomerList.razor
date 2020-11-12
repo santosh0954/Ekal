@@ -3,7 +3,7 @@
 @using Ekal_App.Data;
 @inject CustomerService customerService;  
 
-<h3>Customers</h3>
+<h3>Customers List</h3>
 <hr />
 
 
@@ -13,7 +13,6 @@
 }
 else
 {
-
     <DataGrid TItem="TxnCustomer" Data="@customers" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
               Style="overflow-x:scroll" Bordered="true">
 
@@ -33,7 +32,6 @@ else
         <DataGridColumn TItem="TxnCustomer" Field="@nameof(TxnCustomer.DistrictCode)" Caption="DistrictCode" Displayable="false"></DataGridColumn>
 
     </DataGrid>
-
 }
 
 

@@ -5,165 +5,186 @@
 @inject StateService stateService;
 @inject DistrictService districtService;
 
-<h3>Customer</h3>
-<hr />
-<form>
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Name : </label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@FirstName">
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@MiddleName">
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@LastName">
-        </div>
+        <h3>Customer</h3>
+        <h6 style="text-align:justify; vertical-align:bottom">Total Records : @totalRecords </h6>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Mobile No : </label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@MobileNo">
+    <hr />
+    <EditForm Model="@customer" OnValidSubmit="@Save">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Name : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@customer.FirstName">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@customer.MiddleName">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@customer.LastName">
+            </div>
         </div>
-        <label class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Alt No : </label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@AltMobileNo">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Mobile No : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@customer.MobileNo">
+            </div>
+            <label class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Alt No : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@customer.AltMobileNo">
+            </div>
         </div>
-    </div>
 
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">EMail</label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="email" class="form-control" id="eMail" placeholder="Enter eMail" @bind="@eMail">
-        </div>        
-    </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">EMail</label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="email" class="form-control" id="eMail" placeholder="Enter eMail" @bind="@customer.EMail">
+            </div>
+        </div>
 
-    <div class="form-group row">
-        <label for="inputEmail3" class="col-sm-2 col-form-label">State : </label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @if (states != null)
-                {
+        <div class="form-group row">
+            <label for="ddlStates" class="col-sm-2 col-form-label">State : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <CustomInputSelect id="ddlStates" class="form-control"
+                                   ValueChanged="@((string value) => StateHasChanged(value))"
+                                   ValueExpression="@(() => stateCode)"
+                                   Value="@stateCode">
+                    <option value="00">--SELECT--</option>
+
                     @foreach (var _state in states)
                     {
-                        <option value=@_state.StateCode>@_state.StateName</option>
+                        @if (_state.StateCode == stateCode)
+                        {
+                            <option selected value="@_state.StateCode">@_state.StateName</option>
+                        }
+                        else
+                        {
+                            <option value=@_state.StateCode>@_state.StateName</option>
+                        }
                     }
-                }
-            </select>
-        </div>
-        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">District : </label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @if (districts != null)
-                {
+
+                </CustomInputSelect>
+            </div>
+            <label for="ddlDistricts" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">District : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <CustomInputSelect id="ddlDistricts" class="form-control" @bind-Value="customer.DistrictCode">
+                    <option value="0000">--SELECT--</option>
+
                     @foreach (var _district in districts)
                     {
-                        <option value=@_district.DistrictCode>@_district.DistrictName</option>
+                        @if (_district.DistrictCode == customer.DistrictCode)
+                        {
+                            <option selected value="@_district.DistrictCode">@_district.DistrictName</option>
+                        }
+                        else
+                        {
+                            <option value=@_district.DistrictCode>@_district.DistrictName</option>
+                        }
                     }
-                }
-            </select>
+
+                </CustomInputSelect>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group row">
-        <label for="inputEmail3" class="col-sm-2 col-form-label">Communication : </label>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@AddressLine1">
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Communication : </label>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@customer.AddressLine1">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@customer.AddressLine2">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@customer.AddressLine3">
+            </div>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@AddressLine2">
+        <div class="form-group row">
+
+            <div class="col-lg-3 col-md-3 col-sm-10 offset-2">
+                <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@customer.Tehsil">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-10">
+                <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@customer.Pincode">
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
+                <button type="submit" class="btn btn-success px-5">Save</button>
+            </div>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@AddressLine3">
-        </div>
-    </div>
-    <div class="form-group row">
-
-        <div class="col-lg-3 col-md-3 col-sm-10 offset-2">
-            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@Tehsil">
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@Pincode">
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
-            <button @onclick="@Save" class="btn btn-success px-5">Save</button>
-        </div>      
-    </div>
-</form>
+    </EditForm>
 
 
 
-@code {
-    public int CustomerID { get; set; }
-    public string FirstName { get; set; }
-    public string MiddleName { get; set; }
-    public string LastName { get; set; }
-    public string MobileNo { get; set; }
-    public string AltMobileNo { get; set; }
-    public string eMail { get; set; }
-    public string AddressLine1 { get; set; }
-    public string AddressLine2 { get; set; }
-    public string AddressLine3 { get; set; }
-    public string Tehsil { get; set; }
-    public string Pincode { get; set; }
+    @code {
+
+        int totalRecords = 0;
+        public string stateCode { get; set; }
+
+        TxnCustomer customer = new TxnCustomer();
+
+        List<MstStates> states = new List<MstStates>();
+        List<MstDistricts> districts = new List<MstDistricts>();
 
 
-    List<MstStates> states = null;
-    List<MstDistricts> districts = null;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        await LoadStatesAsync();
-        await LoadDistrictsAsync();
-
-    }
-
-    private async Task LoadStatesAsync()
-    {
-        states = await stateService.GetAsync();
-    }
-
-    private async Task LoadDistrictsAsync()
-    {
-        districts = await districtService.GetAsync();
-    }
-
-    public async Task Save()
-    {
-        TxnCustomer entity = new TxnCustomer();
-        entity.FirstName = FirstName;
-        entity.MiddleName = MiddleName;
-        entity.LastName = LastName;
-        entity.MobileNo = MobileNo;
-        entity.AltMobileNo = AltMobileNo;
-        entity.AddressLine1 = AddressLine1;
-        entity.AddressLine2 = AddressLine2;
-        entity.AddressLine3 = AddressLine3;
-        entity.Tehsil = Tehsil;
-        entity.Pincode = Pincode;
-
-
-        var response = await customerService.AddAsync(entity);
-        if (response)
+        protected override async Task OnInitializedAsync()
         {
-            //await LoadAsync();
-            ResetFields();
+            await LoadStatesAsync();
+            await GetTotalCustomers();
+        }
+
+        private async Task GetTotalCustomers()
+        {
+            var allCustomers= await customerService.GetAsync();
+            totalRecords=allCustomers.Count();
+        }
+
+        private async Task LoadStatesAsync()
+        {
+            states = await stateService.GetAsync();
+        }
+
+        private async Task StateHasChanged(string value)
+        {
+            stateCode = value;
+            if (value == "00")
+                districts.Clear();
+            else
+            {
+                customer.StateCode = value;
+                await LoadDistrictsAsync(value);
+            }
+        }
+
+        private async Task LoadDistrictsAsync(string stateCode)
+        {
+            districts = await districtService.GetDistrictByStateCodeAsync(stateCode);
+
+        }
+
+        public async Task Save()
+        {
+            var response = await customerService.AddAsync(customer);
+            if (response)
+            {
+                await GetTotalCustomers();
+                ResetFields();
+                StateHasChanged();
+            }
+        }
+
+        private void ResetFields()
+        {
+            customer.FirstName = string.Empty;
+            customer.MiddleName = string.Empty;
+            customer.LastName = string.Empty;
+            customer.MobileNo = string.Empty;
+            customer.AltMobileNo = string.Empty;
+            customer.EMail = string.Empty;
+            stateCode = "00";
+            customer.StateCode = "00";
+            customer.DistrictCode = "0000";
+            customer.AddressLine1 = string.Empty;
+            customer.AddressLine2 = string.Empty;
+            customer.AddressLine3 = string.Empty;
+            customer.Tehsil = string.Empty;
+            customer.Pincode = string.Empty;
         }
     }
-
-    private void ResetFields()
-    {
-        CustomerID = 0;
-        FirstName = string.Empty;
-        MiddleName = string.Empty;
-        LastName = string.Empty;
-        MobileNo = string.Empty;
-        AltMobileNo = string.Empty;
-        AddressLine1 = string.Empty;
-        AddressLine2 = string.Empty;
-        AddressLine3 = string.Empty;
-        Pincode = string.Empty;
-    }
-}

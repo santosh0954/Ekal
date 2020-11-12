@@ -25,6 +25,16 @@ namespace Ekal_App.Data
             }
         }
 
+        public async Task<List<MstDistricts>> GetDistrictByStateCodeAsync(string stateCode)
+        {
+            using (EkalContext dbContext = new EkalContext())
+            {
+                return await dbContext.MstDistricts.Where(x => x.StateCode == stateCode)
+                    .OrderBy(y=>y.DistrictName)
+                    .ToListAsync();
+            }
+        }
+
         public async Task<bool> AddAsync(MstDistricts entity)
         {
             using (EkalContext dbContext = new EkalContext())

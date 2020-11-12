@@ -9,11 +9,10 @@
 
 @if (entities != null)
 {
-<form>
-
+<EditForm Model="@ekai">
 
     <div class="form-row">
-        <label for="inputEmail3" class="mr-2">Select Ekai : </label>
+        <label class="mr-2">Select Ekai : </label>
         <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
             <Radio TValue="string" Value="@("1")">Prabhag</Radio>
             <Radio TValue="string" Value="@("2")">Sambhag</Radio>
@@ -26,9 +25,10 @@
 
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Prabhag : </label>
-
-            <select id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag" @onchange="ddlPrabhag_SelectedIndexChanged">
+            <label for="ddlPrabhag" class="col-form-label">Select Prabhag : </label>
+            <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag" 
+                               @bind-Value="selectedPrabhagID" 
+                               @onchange="ddlPrabhag_SelectedIndexChanged">
                 @if (prabhags != null)
                 {
                     @foreach (var _prabhag in prabhags)
@@ -36,10 +36,10 @@
                         <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
                     }
                 }
-            </select>
+            </CustomInputSelect>
         </div>
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Sambhag : </label>
+            <label for="ddlSambhag" class="col-form-label">Select Sambhag : </label>
             <select id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag" @onchange="ddlSambhag_SelectedIndexChanged">
                 @if (sambhags != null)
                 {
@@ -52,7 +52,7 @@
             </select>
         </div>
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Bhag : </label>
+            <label for="ddlBhag" class="col-form-label">Select Bhag : </label>
             <select id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag" @onchange="ddlBhag_SelectedIndexChanged">
                 @if (bhags != null)
                 {
@@ -66,7 +66,7 @@
     </div>
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Anchal : </label>
+            <label for="ddlAnchal" class="col-form-label">Select Anchal : </label>
             <select id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal" @onchange="ddlAnchal_SelectedIndexChanged">
                 @if (anchals != null)
                 {
@@ -78,7 +78,7 @@
             </select>
         </div>
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Sanch : </label>
+            <label for="ddlSanch" class="col-form-label">Select Sanch : </label>
             <select id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch" @onchange="ddlSanch_SelectedIndexChanged">
                 @if (sanchs != null)
                 {
@@ -93,14 +93,14 @@
 
     <div class="form-row">
         <div class="col-sm-4 input-group my-3">
-            <input type="text" class="form-control" placeholder="Enter Ekai Name" @bind="@ekai" />
+            <input type="text" class="form-control" placeholder="Enter Ekai Name" @bind="@ekaiName" />
             <div class="input-group-append">
                 <button @onclick="@Save" class="btn btn-warning">Add</button>
             </div>
         </div>
     </div>
 
-</form>
+</EditForm>
 }
 
 @if (entities == null)
@@ -143,7 +143,7 @@ else
 
 @code {
     string ekaiID;
-    string ekai;
+    string ekaiName;
     string selectedEkai = string.Empty;
     int? selectedParentID = 0;
 
@@ -161,6 +161,7 @@ else
     bool DisableAnchal = true;
     bool DisableSanch = true;
 
+    MstEkai ekai = new MstEkai();
 
     List<VEkai> entities = null;
 
@@ -193,8 +194,8 @@ else
 
     private async Task LoadSamabhagsAsync(int prabhagID)
     {
-        prabhags = await ekaiService.GetAsync();
-        sambhags = prabhags.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
+        var allData = await ekaiService.GetAsync();
+        sambhags = allData.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
         sambhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
@@ -202,7 +203,7 @@ else
     private async Task LoadBhagsAsync(int sambhagID)
     {
         var allData = await ekaiService.GetAsync();
-        bhags = prabhags.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
+        bhags = allData.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
         bhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
@@ -210,7 +211,7 @@ else
     private async Task LoadAnchalsAsync(int bhagID)
     {
         var allData = await ekaiService.GetAsync();
-        anchals = prabhags.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
+        anchals = allData.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
         anchals.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
@@ -218,7 +219,7 @@ else
     private async Task LoadSanchsAsync(int anchalID)
     {
         var allData = await ekaiService.GetAsync();
-        sanchs = prabhags.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
+        sanchs = allData.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
         sanchs.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
@@ -226,7 +227,7 @@ else
     private async Task LoadGramSangathansAsync(int sanchID)
     {
         var allData = await ekaiService.GetAsync();
-        gramSangathan = prabhags.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
+        gramSangathan = allData.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
         gramSangathan.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
@@ -241,7 +242,7 @@ else
         else
         {
             MstEkai entity = new MstEkai();
-            entity.EkaiName = ekai;
+            entity.EkaiName = ekaiName;
             entity.EkaiTypeId = Convert.ToInt16(selectedEkai);
 
             switch (Convert.ToInt16(selectedEkai))
@@ -281,9 +282,8 @@ else
     private void ResetFields()
     {
         ekaiID = null;
-        ekai = string.Empty;
+        ekaiName = string.Empty;
     }
-
 
     #region Events
 

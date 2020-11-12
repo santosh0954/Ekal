@@ -87,6 +87,7 @@ else
     private async Task LoadItemsAsync()
     {
         items = await itemService.GetAsync();
+        items.Insert(0, new MstItems { ItemId = 0, ItemName = "SELECT" });
     }
 
     public async Task Save()
@@ -110,6 +111,6 @@ else
     {
         selectedItemID = 0;
         taskName = string.Empty;
-        qty = 0;        
+        qty = 0;
     }
 }

@@ -242,7 +242,7 @@ namespace EkalEntities.Models
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.DistrictCode)
-                    .HasMaxLength(2)
+                    .HasMaxLength(4)
                     .IsUnicode(false)
                     .IsFixedLength();
 

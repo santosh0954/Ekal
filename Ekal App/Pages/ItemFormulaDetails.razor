@@ -6,6 +6,7 @@
 @inject ItemFormulaDetailsService formulaDetailsService;
 @inject ItemsService itemService;
 
+@inject IToastService toastService;
 
 <h3>Formula Details</h3>
 <hr />
@@ -20,7 +21,7 @@ else
 <form>
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="inputEmail3" class=" col-form-label text-right">Formula : </label>
+            <label for="ddlFormula" class=" col-form-label text-right">Formula : </label>
             <select id="ddlFormula" class="form-control" @bind="@selectedFormulaID">
                 @if (formulas != null)
                 {
@@ -34,7 +35,7 @@ else
         </div>
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="inputEmail3" class=" col-form-label text-right">Item : </label>
+            <label for="ddlFormula" class=" col-form-label text-right">Item : </label>
             <select id="ddlFormula" class="form-control" @bind="@selectedItemID">
                 @if (items != null)
                 {
@@ -46,8 +47,8 @@ else
             </select>
         </div>
         <div class="col-sm-4">
-            <label for="inputEmail3" class=" col-form-label text-right">Qty : </label>
-            <input type="text" class="form-control" placeholder="Enter Qty" @bind="@itemQty" />
+            <label for="itemQty" class=" col-form-label text-right">Qty : </label>
+            <input id="itemQty" type="text" class="form-control" placeholder="Enter Qty" @bind="@itemQty" />
         </div>
         <div class="col-sm-4" style="padding-top: 37px">
             <button @onclick="@AddItems" class="btn btn-warning px-4">Add</button>
@@ -71,14 +72,14 @@ else
 }
 
 @code {
-        decimal itemQty = 0;
+    decimal itemQty = 0;
 
-        int selectedFormulaID = 0;
-        int selectedItemID = 0;
-        List<TxnItemFormula> formulas = null;
-        List<MstItems> items = null;
+    int selectedFormulaID = 0;
+    int selectedItemID = 0;
+    List<TxnItemFormula> formulas = null;
+    List<MstItems> items = null;
 
-        List<TxnItemFormulaDetails> lstFormulaDetails = null;
+    List<TxnItemFormulaDetails> lstFormulaDetails = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,11 +90,13 @@ else
     private async Task LoadItemFormulaAsync()
     {
         formulas = await formulaService.GetAsync();
+        formulas.Insert(0, new TxnItemFormula { ItemFormulaId = 0, FormulaName = "SELECT" });
 
     }
     private async Task LoadItemsAsync()
     {
         items = await itemService.GetAsync();
+        items.Insert(0, new MstItems { ItemId = 0, ItemName = "SELECT" });
 
     }
 
@@ -107,6 +110,10 @@ else
                 await LoadItemsAsync();
                 ResetFields();
             }
+        }
+        else
+        {
+            toastService.ShowInfo("There are no items for save.");
         }
     }
 
@@ -122,11 +129,29 @@ else
         if (lstFormulaDetails == null)
             lstFormulaDetails = new List<TxnItemFormulaDetails>();
 
-        TxnItemFormulaDetails entity = new TxnItemFormulaDetails();
-        entity.ItemFormulaId = selectedFormulaID;
-        entity.SubItemId = selectedItemID;
-        entity.Qty = itemQty;
+        if (ValidateFields())
+        {
+            TxnItemFormulaDetails entity = new TxnItemFormulaDetails();
+            entity.ItemFormulaId = selectedFormulaID;
+            entity.SubItemId = selectedItemID;
+            entity.Qty = itemQty;
 
-        lstFormulaDetails.Add(entity);
+            lstFormulaDetails.Add(entity);
+        }
+    }
+
+    private bool ValidateFields()
+    {
+        if (selectedFormulaID == 0)
+        {
+            toastService.ShowError("Please select Formula.");
+            return false;
+        }
+        if (selectedItemID == 0)
+        {
+            toastService.ShowError("Please select Item.");
+            return false;
+        }
+        return true;
     }
 }

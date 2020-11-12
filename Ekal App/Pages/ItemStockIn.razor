@@ -48,6 +48,7 @@
         <div class="col-sm-4">
             <label for="inputEmail3" class="col-form-label">Item Status : </label>
             <select id="ddlItemStatus" class="form-control" @onchange="ddlItems_SelectedIndexChanged">
+                <option value="0">SELECT</option>
                 <option value="R">Raw Material</option>
                 <option value="S">Semi Finished</option>
                 <option value="F">Finished</option>
@@ -226,49 +227,59 @@ else
     private async Task LoadItemsAsync()
     {
         items = await itemService.GetAsync();
+        items.Insert(0, new MstItems { ItemId = 0, ItemName = "SELECT" });
     }
 
     private async Task LoadItemProvider()
     {
         var allData = await itemProviderService.GetAsync();
         if (!string.IsNullOrEmpty(selectedProviderType))
+        {
             itemProviders = allData.Where(x => x.ProviderType == selectedProviderType).ToList();
+            itemProviders.Insert(0, new TxnItemProvider { ItemProviderId = 0, FirstName = "SELECT" });
+        }
         StateHasChanged();
     }
 
     private async Task LoadPrabhagsAsync()
     {
         prabhags = await ekaiService.GetAsync();
+        prabhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
     }
 
     private async Task LoadSamabhagsAsync(int prabhagID)
     {
         prabhags = await ekaiService.GetAsync();
         sambhags = prabhags.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
+        sambhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
     }
 
     private async Task LoadBhagsAsync(int sambhagID)
     {
         var allData = await ekaiService.GetAsync();
         bhags = prabhags.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
+        bhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
     }
 
     private async Task LoadAnchalsAsync(int bhagID)
     {
         var allData = await ekaiService.GetAsync();
         anchals = prabhags.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
+        anchals.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
     }
 
     private async Task LoadSanchsAsync(int anchalID)
     {
         var allData = await ekaiService.GetAsync();
         sanchs = prabhags.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
+        sanchs.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
     }
 
     private async Task LoadGramSangathansAsync(int sanchID)
     {
         var allData = await ekaiService.GetAsync();
         gramSangathan = prabhags.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
+        gramSangathan.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
     }
 
     public async Task Save()

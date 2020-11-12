@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EkalEntities.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ekal_App.Data
@@ -31,8 +32,10 @@ namespace Ekal_App.Data
             {
                 try
                 {
+                    entity.CreatedDate = DateTime.Now;
+                    entity.CreatedBy = Common.UserProfileID;
                     await dbContext.TxnCustomer.AddAsync(entity);
-                    dbContext.SaveChanges();
+                    dbContext.SaveChanges();                      
                     return true;
                 }
                 catch (Exception ex)
