@@ -11,5 +11,7 @@ namespace EkalEntities.Models
         public bool? IsPresent { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual TxnVolunteer Volunteer { get; set; }
     }
 }

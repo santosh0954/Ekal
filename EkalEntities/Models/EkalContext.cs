@@ -26,6 +26,8 @@ namespace EkalEntities.Models
         public virtual DbSet<MstUnit> MstUnit { get; set; }
         public virtual DbSet<MstVolunteerType> MstVolunteerType { get; set; }
         public virtual DbSet<TxnCustomer> TxnCustomer { get; set; }
+        public virtual DbSet<TxnCustomerOrder> TxnCustomerOrder { get; set; }
+        public virtual DbSet<TxnCustomerOrderDetails> TxnCustomerOrderDetails { get; set; }
         public virtual DbSet<TxnItemFormula> TxnItemFormula { get; set; }
         public virtual DbSet<TxnItemFormulaDetails> TxnItemFormulaDetails { get; set; }
         public virtual DbSet<TxnItemProvider> TxnItemProvider { get; set; }
@@ -35,6 +37,7 @@ namespace EkalEntities.Models
         public virtual DbSet<TxnVolunteerAttendance> TxnVolunteerAttendance { get; set; }
         public virtual DbSet<TxnVolunteerBankDetails> TxnVolunteerBankDetails { get; set; }
         public virtual DbSet<VEkai> VEkai { get; set; }
+        public virtual DbSet<VItemProvider> VItemProvider { get; set; }
         public virtual DbSet<VItems> VItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -43,7 +46,6 @@ namespace EkalEntities.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Ekal;Trusted_Connection=True;");
-                //optionsBuilder.UseSqlServer("Server=103.224.247.81;Database=Ekal; user id=ekal; password=ekal@2020;");
             }
         }
 
@@ -108,6 +110,11 @@ namespace EkalEntities.Models
                 entity.Property(e => e.EkaiTypeId).HasColumnName("EkaiTypeID");
 
                 entity.Property(e => e.ParentEkaiId).HasColumnName("ParentEkaiID");
+
+                entity.HasOne(d => d.EkaiType)
+                    .WithMany(p => p.MstEkai)
+                    .HasForeignKey(d => d.EkaiTypeId)
+                    .HasConstraintName("FK_MstEkai_MstEkaiType");
             });
 
             modelBuilder.Entity<MstEkaiType>(entity =>
@@ -136,6 +143,11 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.UnitId).HasColumnName("UnitID");
+
+                entity.HasOne(d => d.Unit)
+                    .WithMany(p => p.MstItems)
+                    .HasForeignKey(d => d.UnitId)
+                    .HasConstraintName("FK_MstItems_MstUnit");
             });
 
             modelBuilder.Entity<MstRegion>(entity =>
@@ -282,6 +294,59 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<TxnCustomerOrder>(entity =>
+            {
+                entity.HasKey(e => e.CustomerOrderId);
+
+                entity.Property(e => e.CustomerOrderId).HasColumnName("CustomerOrderID");
+
+                entity.Property(e => e.ActualDeliveryDate).HasColumnType("date");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.ExpectedDeliveryDate).HasColumnType("date");
+
+                entity.Property(e => e.OrderDate).HasColumnType("date");
+
+                entity.Property(e => e.OrderNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.TxnCustomerOrder)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK_TxnCustomerOrder_TxnCustomer");
+            });
+
+            modelBuilder.Entity<TxnCustomerOrderDetails>(entity =>
+            {
+                entity.HasKey(e => e.OrderDetailsId);
+
+                entity.Property(e => e.OrderDetailsId).HasColumnName("OrderDetailsID");
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.Rate).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.TxnCustomerOrderDetails)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_TxnCustomerOrderDetails_MstItems");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.TxnCustomerOrderDetails)
+                    .HasForeignKey(d => d.OrderId)
+                    .HasConstraintName("FK_TxnCustomerOrderDetails_TxnCustomerOrder");
+            });
+
             modelBuilder.Entity<TxnItemFormula>(entity =>
             {
                 entity.HasKey(e => e.ItemFormulaId)
@@ -298,6 +363,11 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.TxnItemFormula)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_TxnItemFormula_MstItems");
             });
 
             modelBuilder.Entity<TxnItemFormulaDetails>(entity =>
@@ -314,6 +384,16 @@ namespace EkalEntities.Models
                 entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.SubItemId).HasColumnName("SubItemID");
+
+                entity.HasOne(d => d.ItemFormula)
+                    .WithMany(p => p.TxnItemFormulaDetails)
+                    .HasForeignKey(d => d.ItemFormulaId)
+                    .HasConstraintName("FK_TxnItemFormulaDetails_TxnItemFormula");
+
+                entity.HasOne(d => d.SubItem)
+                    .WithMany(p => p.TxnItemFormulaDetails)
+                    .HasForeignKey(d => d.SubItemId)
+                    .HasConstraintName("FK_TxnItemFormulaDetails_MstItems");
             });
 
             modelBuilder.Entity<TxnItemProvider>(entity =>
@@ -380,6 +460,10 @@ namespace EkalEntities.Models
                     .HasMaxLength(2)
                     .IsUnicode(false)
                     .IsFixedLength();
+
+                entity.Property(e => e.Tehsil)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TxnItemStock>(entity =>
@@ -406,6 +490,16 @@ namespace EkalEntities.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.TxnItemStock)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_TxnItemStock_MstItems");
+
+                entity.HasOne(d => d.ItemProvider)
+                    .WithMany(p => p.TxnItemStock)
+                    .HasForeignKey(d => d.ItemProviderId)
+                    .HasConstraintName("FK_TxnItemStock_TxnItemProvider");
             });
 
             modelBuilder.Entity<TxnTasks>(entity =>
@@ -437,6 +531,11 @@ namespace EkalEntities.Models
                     .IsUnicode(false)
                     .IsFixedLength()
                     .HasComment("G : Group based; I : Individual");
+
+                entity.HasOne(d => d.ForItem)
+                    .WithMany(p => p.TxnTasks)
+                    .HasForeignKey(d => d.ForItemId)
+                    .HasConstraintName("FK_TxnTasks_MstItems");
             });
 
             modelBuilder.Entity<TxnVolunteer>(entity =>
@@ -513,6 +612,16 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.VolunteerTypeId).HasColumnName("VolunteerTypeID");
+
+                entity.HasOne(d => d.Ekai)
+                    .WithMany(p => p.TxnVolunteer)
+                    .HasForeignKey(d => d.EkaiId)
+                    .HasConstraintName("FK_TxnVolunteer_MstEkai");
+
+                entity.HasOne(d => d.VolunteerType)
+                    .WithMany(p => p.TxnVolunteer)
+                    .HasForeignKey(d => d.VolunteerTypeId)
+                    .HasConstraintName("FK_TxnVolunteer_MstVolunteerType");
             });
 
             modelBuilder.Entity<TxnVolunteerAttendance>(entity =>
@@ -526,6 +635,11 @@ namespace EkalEntities.Models
                 entity.Property(e => e.VolunteerAttendanceDetails).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.VolunteerId).HasColumnName("VolunteerID");
+
+                entity.HasOne(d => d.Volunteer)
+                    .WithMany()
+                    .HasForeignKey(d => d.VolunteerId)
+                    .HasConstraintName("FK_TxnVolunteerAttendance_TxnVolunteer");
             });
 
             modelBuilder.Entity<TxnVolunteerBankDetails>(entity =>
@@ -548,6 +662,16 @@ namespace EkalEntities.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.VolunteerId).HasColumnName("VolunteerID");
+
+                entity.HasOne(d => d.Bank)
+                    .WithMany(p => p.TxnVolunteerBankDetails)
+                    .HasForeignKey(d => d.BankId)
+                    .HasConstraintName("FK_TxnVolunteerBankDetails_MstBank");
+
+                entity.HasOne(d => d.Volunteer)
+                    .WithMany(p => p.TxnVolunteerBankDetails)
+                    .HasForeignKey(d => d.VolunteerId)
+                    .HasConstraintName("FK_TxnVolunteerBankDetails_TxnVolunteer");
             });
 
             modelBuilder.Entity<VEkai>(entity =>
@@ -568,6 +692,85 @@ namespace EkalEntities.Models
 
                 entity.Property(e => e.Sambhag)
                     .HasMaxLength(128)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VItemProvider>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vItemProvider");
+
+                entity.Property(e => e.AddressLine1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddressLine2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddressLine3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AltMobileNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DistrictCode)
+                    .HasMaxLength(4)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DistrictName)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EMail)
+                    .HasColumnName("eMail")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ItemProviderId).HasColumnName("ItemProviderID");
+
+                entity.Property(e => e.LastName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MiddleName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MobileNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pincode)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ProviderType)
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StateCode)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.StateName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tehsil)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 

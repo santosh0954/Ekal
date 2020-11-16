@@ -1,0 +1,117 @@
+﻿@page "/customerOrder"
+@using EkalEntities.Models;
+@using EkalEntities.CustomModels; 
+@using Ekal_App.Data; 
+
+@inject ItemsService itemService;
+@inject CustomerService customerService;
+@inject CustomerOrderService orderService;
+
+<h3>Customer Order</h3>
+<hr/>
+
+<EditForm Model="customerOrder" OnValidSubmit="Save">
+    <label for="ddlCustomer">Customer :</label>
+    <CustomInputSelect id="ddlCustomer" class="form-control"
+                       @bind-Value="@selectedCustomerID">
+        <option>SELECT</option>
+        @foreach (TxnCustomer customer in customers)
+        {
+            @if (customer.CustomerId == selectedCustomerID)
+            {
+                <option selected value="@customer.CustomerId">@customer.FirstName @customer.MiddleName</option>
+            }
+            else
+            {
+                <option value="@customer.CustomerId">@customer.FirstName @customer.MiddleName</option>
+            }
+        }
+    </CustomInputSelect>
+    <div class="form-group row">
+        <label for="txtOrderNo">OrderNo :</label>
+        <InputText id="txtOrderNo" @bind-Value="@customerOrder.OrderNo" />
+        <InputDate id="dtOrderDate" @bind-Value="@customerOrder.OrderDate" />
+    </div>
+    <div class="form-group row">
+        <label for="ddlCustomer">Item :</label>
+        <CustomInputSelect id="ddlItem" @bind-Value="@selectedItemID">
+            <option>SELECT</option>
+            @foreach (MstItems item in items)
+            {
+                @if (item.ItemId == selectedItemID)
+                {
+                    <option selected value="@item.ItemId">@item.ItemName </option>
+                }
+                else
+                {
+                    <option value="@item.ItemId">@item.ItemName </option>
+                }
+            }
+        </CustomInputSelect>
+        <label for="txtQty">Qty :</label>
+
+        <InputNumber id="txtQty" @bind-Value="@InputQty" />
+        <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
+            <button @onclick="@AddItem" class="btn btn-success px-5">Add</button>
+        </div>
+    </div>
+
+</EditForm>
+
+<div>
+    <DataGrid TItem="OrderDetails" Data="@lstOrderDetails" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" Style="overflow-x:scroll" Bordered="true">
+        
+        <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.ItemName)" Caption="Item"></DataGridColumn>
+        <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.Rate)" Caption="Rate"></DataGridColumn>
+        <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.Qty)" Caption="Qty"></DataGridColumn>
+        <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.Amount)" Caption="Amount"></DataGridColumn>
+
+    </DataGrid>
+</div>
+
+
+@code {
+    TxnCustomerOrder customerOrder = new TxnCustomerOrder();
+    List<TxnCustomerOrderDetails> lstCustomerOrderDetails = new List<TxnCustomerOrderDetails>();
+    List<OrderDetails> lstOrderDetails = new List<OrderDetails>();
+
+
+    public int selectedCustomerID { get; set; }
+    public int selectedItemID { get; set; }
+    public int InputQty { get; set; }
+
+    List<TxnCustomer> customers = new List<TxnCustomer>();
+    List<MstItems> items = new List<MstItems>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadItems();
+        await LoadCustomers();
+    }
+
+    private async Task LoadItems()
+    {
+        items = await itemService.GetAsync();
+    }
+
+    private async Task LoadCustomers()
+    {
+        customers = await customerService.GetAsync();
+    }
+
+
+    private void AddItem()
+    {
+        OrderDetails orderDetail = new OrderDetails();
+        orderDetail.ItemID = selectedItemID;
+        orderDetail.Qty = (short)InputQty;
+
+        lstOrderDetails.Add(orderDetail);
+        StateHasChanged();
+    }
+
+    private void Save()
+    {
+
+    }
+}

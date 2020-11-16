@@ -11,5 +11,8 @@ namespace EkalEntities.Models
         public decimal? Qty { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual TxnItemFormula ItemFormula { get; set; }
+        public virtual MstItems SubItem { get; set; }
     }
 }

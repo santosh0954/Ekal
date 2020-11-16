@@ -16,5 +16,7 @@ namespace EkalEntities.Models
         public DateTime? ActualEndDate { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual MstItems ForItem { get; set; }
     }
 }

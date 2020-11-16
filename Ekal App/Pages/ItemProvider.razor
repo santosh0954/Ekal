@@ -8,142 +8,153 @@
 <h3>Item Provider</h3>
 <hr />
 
-<form>
+<EditForm Model="@provider" OnValidSubmit="Save">
     <div class="form-group row">
         <label for="inputEmail3" class="col-sm-3 col-form-label">Select Source : </label>
         <RadioGroup TValue="string" Name="rbtnProviderType" Inline="true" CheckedValueChanged="@rbtnProviderType_OnCheckedValueChanged">
-            <Radio TValue="string" Value="@("P")">Mechant</Radio>
+            <Radio TValue="string" Value="@("M")">Merchant</Radio>
             <Radio TValue="string" Value="@("D")">Donor</Radio>
         </RadioGroup>
     </div>
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Name : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@FirstName">
+            <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@provider.FirstName">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@MiddleName">
+            <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@provider.MiddleName">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@LastName">
+            <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@provider.LastName">
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Mobile No : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@MobileNo">
+            <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@provider.MobileNo">
         </div>
         <label class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Alt No : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@AltMobileNo">
+            <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@provider.AltMobileNo">
         </div>
     </div>
 
     <div class="form-group row">
         <label for="inputEmail3" class="col-sm-2 col-form-label">State : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
+            <CustomInputSelect id="ddlStates" class="form-control"
+                               ValueChanged="@((string value) => StateHasChanged(value))"
+                               ValueExpression="@(() => stateCode)"
+                               Value="@stateCode">
+                <option value="00">--SELECT--</option>
                 @if (states != null)
                 {
                     @foreach (var _state in states)
                     {
-                        <option value=@_state.StateCode>@_state.StateName</option>
+                        @if (_state.StateCode == stateCode)
+                        {
+                            <option selected value="@_state.StateCode">@_state.StateName</option>
+                        }
+                        else
+                        {
+                            <option value=@_state.StateCode>@_state.StateName</option>
+                        }
                     }
                 }
-            </select>
+
+            </CustomInputSelect>
         </div>
         <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">District : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @if (districts != null)
+            <CustomInputSelect id="ddlDistricts" class="form-control" @bind-Value="provider.DistrictCode">
+                <option value="0000">--SELECT--</option>
+
+                @foreach (var _district in districts)
                 {
-                    @foreach (var _district in districts)
+                    @if (_district.DistrictCode == provider.DistrictCode)
+                    {
+                        <option selected value="@_district.DistrictCode">@_district.DistrictName</option>
+                    }
+                    else
                     {
                         <option value=@_district.DistrictCode>@_district.DistrictName</option>
                     }
                 }
-            </select>
+
+            </CustomInputSelect>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="inputEmail3" class="col-sm-2 col-form-label">Communication : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@AddressLine1">
+            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@provider.AddressLine1">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@AddressLine2">
+            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@provider.AddressLine2">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@AddressLine3">
+            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@provider.AddressLine3">
         </div>
     </div>
     <div class="form-group row">
 
         <div class="col-lg-3 col-md-3 col-sm-10 offset-2">
-            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@Tehsil">
+            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@provider.Tehsil">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@Pincode">
+            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@provider.Pincode">
         </div>
         <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
-            <button @onclick="@Save" class="btn btn-success px-5">Save</button>
+            <button type="submit" class="btn btn-success px-5">Save</button>
         </div>        
     </div>
-</form>
+</EditForm>
 
 @code {
-    public int ItemProviderID { get; set; }
-    public string FirstName { get; set; }
-    public string MiddleName { get; set; }
-    public string LastName { get; set; }
-    public string MobileNo { get; set; }
-    public string AltMobileNo { get; set; }
-    public string AddressLine1 { get; set; }
-    public string AddressLine2 { get; set; }
-    public string AddressLine3 { get; set; }
-    public string Tehsil { get; set; }
-    public string Pincode { get; set; }
+
+    public string stateCode { get; set; }
+
+    TxnItemProvider provider = new TxnItemProvider();
 
     List<MstStates> states = null;
-    List<MstDistricts> districts = null;
+    List<MstDistricts> districts = new List<MstDistricts>();
 
     string selectedProviderType = string.Empty;
 
     protected override void OnInitialized()
     {
         LoadStatesAsync();
-        LoadDistrictsAsync();
     }
 
     private async void LoadStatesAsync()
     {
         states = await stateService.GetAsync();
-        states.Insert(0, new MstStates { StateCode = "00", StateName = "SELECT" });
     }
 
-    private async void LoadDistrictsAsync()
+    private async Task StateHasChanged(string value)
     {
-        districts = await districtService.GetAsync();
-        districts.Insert(0, new MstDistricts { DistrictCode = "0000", DistrictName = "SELECT" });
+        stateCode = value;
+        if (value == "00")
+            districts.Clear();
+        else
+        {
+            provider.StateCode = value;
+            await LoadDistrictsAsync(value);
+        }
+    }
+
+
+    private async Task LoadDistrictsAsync(string value)
+    {
+        districts = await districtService.GetDistrictByStateCodeAsync(value);
     }
 
     public async void Save()
     {
-        TxnItemProvider entity = new TxnItemProvider();
-        entity.FirstName = FirstName;
-        entity.MiddleName = MiddleName;
-        entity.LastName = LastName;
-        entity.MobileNo = MobileNo;
-        entity.AltMobileNo = AltMobileNo;
-        entity.AddressLine1 = AddressLine1;
-        entity.AddressLine2 = AddressLine2;
-        entity.AddressLine3 = AddressLine3;
-        entity.Pincode = Pincode;
-        entity.ProviderType = selectedProviderType;
+        provider.ProviderType = selectedProviderType;
 
-
-        var response = await itemProviderService.AddAsync(entity);
+        var response = await itemProviderService.AddAsync(provider);
         if (response)
         {
             //await LoadAsync();
@@ -153,16 +164,20 @@
 
     private void ResetFields()
     {
-        ItemProviderID = 0;
-        FirstName = string.Empty;
-        MiddleName = string.Empty;
-        LastName = string.Empty;
-        MobileNo = string.Empty;
-        AltMobileNo = string.Empty;
-        AddressLine1 = string.Empty;
-        AddressLine2 = string.Empty;
-        AddressLine3 = string.Empty;
-        Pincode = string.Empty;
+        provider.FirstName = string.Empty;
+        provider.MiddleName = string.Empty;
+        provider.LastName = string.Empty;
+        provider.MobileNo = string.Empty;
+        provider.AltMobileNo = string.Empty;
+        stateCode = "00";
+        provider.StateCode = "00";
+        provider.DistrictCode = "0000";
+        provider.AddressLine1 = string.Empty;
+        provider.AddressLine2 = string.Empty;
+        provider.AddressLine3 = string.Empty;
+        provider.Tehsil = string.Empty;
+        provider.Pincode = string.Empty;
+
     }
 
     #region Events

@@ -3,15 +3,12 @@ using System.Collections.Generic;
 
 namespace EkalEntities.Models
 {
-    public partial class TxnItemProvider
+    public partial class VItemProvider
     {
-        public TxnItemProvider()
-        {
-            TxnItemStock = new HashSet<TxnItemStock>();
-        }
-
         public int ItemProviderId { get; set; }
         public string ProviderType { get; set; }
+        public string ProviderTypeName { get; set; }
+
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -22,12 +19,10 @@ namespace EkalEntities.Models
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
         public string StateCode { get; set; }
+        public string StateName { get; set; }
         public string DistrictCode { get; set; }
+        public string DistrictName { get; set; }
         public string Tehsil { get; set; }
         public string Pincode { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public int? CreatedBy { get; set; }
-
-        public virtual ICollection<TxnItemStock> TxnItemStock { get; set; }
     }
 }

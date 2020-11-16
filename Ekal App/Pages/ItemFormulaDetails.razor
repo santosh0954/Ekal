@@ -5,6 +5,7 @@
 @inject ItemFormulaService formulaService;
 @inject ItemFormulaDetailsService formulaDetailsService;
 @inject ItemsService itemService;
+@inject UnitService unitService;
 
 @inject IToastService toastService;
 
@@ -18,7 +19,7 @@
 }
 else
 {
-<form>
+<EditForm Model="itemFormulaDetails">
     <div class="form-row">
         <div class="col-sm-4">
             <label for="ddlFormula" class=" col-form-label text-right">Formula : </label>
@@ -35,8 +36,11 @@ else
         </div>
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="ddlFormula" class=" col-form-label text-right">Item : </label>
-            <select id="ddlFormula" class="form-control" @bind="@selectedItemID">
+            <label for="ddlItem" class=" col-form-label text-right">Item : </label>
+            <CustomInputSelect id="ddlItems" class="form-control"
+                               ValueChanged="@((int value) => ItemHasChanged(value))"
+                               ValueExpression="@(() => selectedItemID)"
+                               Value="@selectedItemID">
                 @if (items != null)
                 {
                     @foreach (var _item in items)
@@ -44,7 +48,8 @@ else
                         <option value=@_item.ItemId>@_item.ItemName</option>
                     }
                 }
-            </select>
+            </CustomInputSelect>
+            <label class="col-form-label text-right">/@ItemUnit</label>
         </div>
         <div class="col-sm-4">
             <label for="itemQty" class=" col-form-label text-right">Qty : </label>
@@ -68,7 +73,7 @@ else
     <button @onclick="@Save" class="btn btn-warning">Save</button>
 
 
-</form>
+</EditForm>
 }
 
 @code {
@@ -76,10 +81,15 @@ else
 
     int selectedFormulaID = 0;
     int selectedItemID = 0;
+    string ItemUnit = string.Empty;
+
     List<TxnItemFormula> formulas = null;
     List<MstItems> items = null;
 
     List<TxnItemFormulaDetails> lstFormulaDetails = null;
+
+    TxnItemFormulaDetails itemFormulaDetails = new TxnItemFormulaDetails();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,6 +108,21 @@ else
         items = await itemService.GetAsync();
         items.Insert(0, new MstItems { ItemId = 0, ItemName = "SELECT" });
 
+    }
+
+    private async Task ItemHasChanged(int value)
+    {
+        selectedItemID = value;
+        if (value == 0)
+            items.Clear();
+        else
+        {
+            itemFormulaDetails.SubItemId = value;
+            //Getting selected Item Unit
+            var selectedItemUnitID = items.Where(x => x.ItemId == selectedItemID).FirstOrDefault().UnitId;
+            var unitInfo = await unitService.GetAsync((short)selectedItemUnitID);
+            ItemUnit = unitInfo.Unit;
+        }
     }
 
     public async Task Save()

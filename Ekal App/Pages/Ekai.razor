@@ -9,7 +9,7 @@
 
 @if (entities != null)
 {
-<EditForm Model="@ekai">
+<EditForm Model="@ekai" OnValidSubmit="Save">
 
     <div class="form-row">
         <label class="mr-2">Select Ekai : </label>
@@ -26,74 +26,120 @@
     <div class="form-row">
         <div class="col-sm-4">
             <label for="ddlPrabhag" class="col-form-label">Select Prabhag : </label>
-            <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag" 
-                               @bind-Value="selectedPrabhagID" 
-                               @onchange="ddlPrabhag_SelectedIndexChanged">
-                @if (prabhags != null)
+            <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag"
+                               ValueChanged="@((int value)=>PrabhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedPrabhagID)"
+                               Value="@selectedPrabhagID">
+                <option value="0">--SELECT--</option>
+                @foreach (var _prabhag in prabhags)
                 {
-                    @foreach (var _prabhag in prabhags)
+                    @if (_prabhag.EkaiId == selectedPrabhagID)
+                    {
+                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
                     }
                 }
+
             </CustomInputSelect>
         </div>
         <div class="col-sm-4">
             <label for="ddlSambhag" class="col-form-label">Select Sambhag : </label>
-            <select id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag" @onchange="ddlSambhag_SelectedIndexChanged">
-                @if (sambhags != null)
+            <CustomInputSelect id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag"
+                               ValueChanged="@((int value)=>SambhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedSambhagID)"
+                               Value="@selectedSambhagID">
+
+                <option value="0">--SELECT--</option>
+                
+                @foreach (var _data in sambhags)
                 {
-                    @foreach (var _data in sambhags)
+                    @if (_data.EkaiId == selectedSambhagID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_data.EkaiId>@_data.EkaiName</option>
-
                     }
                 }
-            </select>
+                
+            </CustomInputSelect>
         </div>
         <div class="col-sm-4">
             <label for="ddlBhag" class="col-form-label">Select Bhag : </label>
-            <select id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag" @onchange="ddlBhag_SelectedIndexChanged">
-                @if (bhags != null)
+            <CustomInputSelect id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag"
+                               ValueChanged="@((int value)=>BhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedBhagID)"
+                               Value="@selectedBhagID">
+                <option value="0">--SELECT--</option>
+                
+                @foreach (var _data in bhags)
                 {
-                    @foreach (var _data in bhags)
+                    @if (_data.EkaiId == selectedBhagID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_data.EkaiId>@_data.EkaiName</option>
                     }
                 }
-            </select>
+                
+            </CustomInputSelect>
         </div>
     </div>
     <div class="form-row">
         <div class="col-sm-4">
             <label for="ddlAnchal" class="col-form-label">Select Anchal : </label>
-            <select id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal" @onchange="ddlAnchal_SelectedIndexChanged">
-                @if (anchals != null)
+            <CustomInputSelect id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal" 
+                                ValueChanged="@((int value)=>AnchalStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedAnchalID)"
+                               Value="@selectedAnchalID">
+                <option value="0">--SELECT--</option>
+                @foreach (var _data in anchals)
                 {
-                    @foreach (var _data in anchals)
+                    @if (_data.EkaiId == selectedAnchalID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_data.EkaiId>@_data.EkaiName</option>
                     }
                 }
-            </select>
+                
+            </CustomInputSelect>
         </div>
         <div class="col-sm-4">
             <label for="ddlSanch" class="col-form-label">Select Sanch : </label>
-            <select id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch" @onchange="ddlSanch_SelectedIndexChanged">
-                @if (sanchs != null)
+            <CustomInputSelect id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch"
+                               ValueChanged="@((int value)=>SanchStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedSanchID)"
+                               Value="@selectedSanchID">
+                <option value="0">--SELECT--</option>
+                
+                @foreach (var _data in sanchs)
                 {
-                    @foreach (var _data in sanchs)
+                    @if (_data.EkaiId == selectedSanchID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_data.EkaiId>@_data.EkaiName</option>
                     }
                 }
-            </select>
+                
+            </CustomInputSelect>
         </div>
     </div>
 
     <div class="form-row">
         <div class="col-sm-4 input-group my-3">
-            <input type="text" class="form-control" placeholder="Enter Ekai Name" @bind="@ekaiName" />
+            <input type="text" class="form-control" placeholder="Enter @selectedEkaiName Name" @bind-value="ekai.EkaiName" />
             <div class="input-group-append">
                 <button @onclick="@Save" class="btn btn-warning">Add</button>
             </div>
@@ -145,6 +191,7 @@ else
     string ekaiID;
     string ekaiName;
     string selectedEkai = string.Empty;
+    string selectedEkaiName = "Ekai";
     int? selectedParentID = 0;
 
     int selectedPrabhagID = 0;
@@ -165,12 +212,12 @@ else
 
     List<VEkai> entities = null;
 
-    List<MstEkai> prabhags = null;
-    List<MstEkai> sambhags = null;
-    List<MstEkai> bhags = null;
-    List<MstEkai> anchals = null;
-    List<MstEkai> sanchs = null;
-    List<MstEkai> gramSangathan = null;
+    List<MstEkai> prabhags = new List<MstEkai>();
+    List<MstEkai> sambhags = new List<MstEkai>();
+    List<MstEkai> bhags = new List<MstEkai>();
+    List<MstEkai> anchals = new List<MstEkai>();
+    List<MstEkai> sanchs = new List<MstEkai>();
+    List<MstEkai> gramSangathan = new List<MstEkai>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,6 +228,9 @@ else
     {
         entities = await ekaiService.GetViewAsync();
         totalRecords = entities.Count();
+
+        await LoadPrabhagsAsync();
+
         StateHasChanged();
     }
 
@@ -188,7 +238,6 @@ else
     {
         var allData = await ekaiService.GetAsync();
         prabhags = allData.Where(x => x.EkaiTypeId == 1).ToList();
-        prabhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -196,7 +245,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         sambhags = allData.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
-        sambhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
+
         StateHasChanged();
     }
 
@@ -204,7 +253,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         bhags = allData.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
-        bhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
+
         StateHasChanged();
     }
 
@@ -212,7 +261,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         anchals = allData.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
-        anchals.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
+
         StateHasChanged();
     }
 
@@ -220,7 +269,7 @@ else
     {
         var allData = await ekaiService.GetAsync();
         sanchs = allData.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
-        sanchs.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
+
         StateHasChanged();
     }
 
@@ -228,7 +277,6 @@ else
     {
         var allData = await ekaiService.GetAsync();
         gramSangathan = allData.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
-        gramSangathan.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
         StateHasChanged();
     }
 
@@ -241,9 +289,7 @@ else
         }
         else
         {
-            MstEkai entity = new MstEkai();
-            entity.EkaiName = ekaiName;
-            entity.EkaiTypeId = Convert.ToInt16(selectedEkai);
+            ekai.EkaiTypeId = Convert.ToInt16(selectedEkai);
 
             switch (Convert.ToInt16(selectedEkai))
             {
@@ -267,9 +313,9 @@ else
                     break;
             }
 
-            entity.ParentEkaiId = selectedParentID;
+            ekai.ParentEkaiId = selectedParentID;
 
-            var response = await ekaiService.AddAsync(entity);
+            var response = await ekaiService.AddAsync(ekai);
             if (response)
             {
                 await LoadAsync();
@@ -277,7 +323,6 @@ else
             }
         }
     }
-
 
     private void ResetFields()
     {
@@ -288,7 +333,7 @@ else
     #region Events
 
 
-    async void rbtnEkai_OnCheckedValueChanged(string value)
+    void rbtnEkai_OnCheckedValueChanged(string value)
     {
         selectedEkai = value;
         DisablePrabhag = true;
@@ -300,28 +345,29 @@ else
         switch (Convert.ToInt16(value))
         {
             case 1:
-                await LoadPrabhagsAsync();
+                selectedEkaiName = "Prabhag";
                 break;
             case 2:
                 DisablePrabhag = false;
-
+                selectedEkaiName = "Sambhag";
                 break;
             case 3:
                 DisablePrabhag = false;
                 DisableSambhag = false;
-
+                selectedEkaiName = "Bhag";
                 break;
             case 4:
                 DisablePrabhag = false;
                 DisableSambhag = false;
                 DisableBhag = false;
-
+                selectedEkaiName = "Anchal";
                 break;
             case 5:
                 DisablePrabhag = false;
                 DisableSambhag = false;
                 DisableBhag = false;
                 DisableAnchal = false;
+                selectedEkaiName = "Sanch";
                 break;
             case 6:
                 DisablePrabhag = false;
@@ -329,15 +375,16 @@ else
                 DisableBhag = false;
                 DisableAnchal = false;
                 DisableSanch = false;
+                selectedEkaiName = "Gram";
                 break;
 
         }
     }
 
 
-    async void ddlPrabhag_SelectedIndexChanged(ChangeEventArgs e)
+    async void PrabhagStateHasChanged(int value)
     {
-        selectedPrabhagID = Convert.ToInt32(e.Value);
+        selectedPrabhagID = value;
         if (selectedPrabhagID > 0)
         {
             selectedParentID = selectedPrabhagID;
@@ -345,9 +392,9 @@ else
         }
     }
 
-    async void ddlSambhag_SelectedIndexChanged(ChangeEventArgs e)
+    async void SambhagStateHasChanged(int value)
     {
-        selectedSambhagID = Convert.ToInt32(e.Value);
+        selectedSambhagID = value;
         if (selectedSambhagID > 0)
         {
             selectedParentID = selectedSambhagID;
@@ -355,9 +402,9 @@ else
         }
     }
 
-    async void ddlBhag_SelectedIndexChanged(ChangeEventArgs e)
+    async void BhagStateHasChanged(int value)
     {
-        selectedBhagID = Convert.ToInt32(e.Value);
+        selectedBhagID = value;
         if (selectedBhagID > 0)
         {
             selectedParentID = selectedBhagID;
@@ -365,9 +412,9 @@ else
         }
     }
 
-    async void ddlAnchal_SelectedIndexChanged(ChangeEventArgs e)
+    async void AnchalStateHasChanged(int value)
     {
-        selectedAnchalID = Convert.ToInt32(e.Value);
+        selectedAnchalID = value;
         if (selectedAnchalID > 0)
         {
             selectedParentID = selectedAnchalID;
@@ -375,9 +422,9 @@ else
         }
     }
 
-    async void ddlSanch_SelectedIndexChanged(ChangeEventArgs e)
+    async void SanchStateHasChanged(int value)
     {
-        selectedSanchID = Convert.ToInt32(e.Value);
+        selectedSanchID = value;
         if (selectedSanchID > 0)
         {
             selectedParentID = selectedSanchID;

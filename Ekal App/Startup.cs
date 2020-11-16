@@ -52,6 +52,7 @@ namespace Ekal_App
             services.AddSingleton<VolunteerBankDetailsService>();
             services.AddSingleton<VolunteerService>();
             services.AddSingleton<VolunteerTypeService>();
+            services.AddSingleton<CustomerOrderService>();
 
             services.AddBlazoredToast();
 

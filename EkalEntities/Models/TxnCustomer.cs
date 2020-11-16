@@ -5,6 +5,11 @@ namespace EkalEntities.Models
 {
     public partial class TxnCustomer
     {
+        public TxnCustomer()
+        {
+            TxnCustomerOrder = new HashSet<TxnCustomerOrder>();
+        }
+
         public int CustomerId { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -21,5 +26,7 @@ namespace EkalEntities.Models
         public string Pincode { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual ICollection<TxnCustomerOrder> TxnCustomerOrder { get; set; }
     }
 }

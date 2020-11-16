@@ -12,5 +12,8 @@ namespace EkalEntities.Models
         public string Ifsc { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual MstBank Bank { get; set; }
+        public virtual TxnVolunteer Volunteer { get; set; }
     }
 }

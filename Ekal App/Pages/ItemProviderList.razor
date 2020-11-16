@@ -13,31 +13,36 @@
 else
 {
 
-    <DataGrid TItem="TxnItemProvider" Data="@itemProviders" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
-              Style="overflow-x:scroll" Bordered="true">
+<DataGrid TItem="VItemProvider" Data="@itemProviders" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
+          Style="overflow-x:scroll" Bordered="true">
 
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.ItemProviderId)" Caption="ItemProviderID" Displayable="false"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.FirstName)" Caption="FirstName"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.MiddleName)" Caption="MiddleName"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.LastName)" Caption="LastName"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.MobileNo)" Caption="MobileNo"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AltMobileNo)" Caption="AltMobileNo"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.EMail)" Caption="eMail"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AddressLine1)" Caption="AddressLine1"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AddressLine2)" Caption="AddressLine2"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.AddressLine3)" Caption="AddressLine3"></DataGridColumn>        
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.Pincode)" Caption="Pincode"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.StateCode)" Caption="StateCode" Displayable="false"></DataGridColumn>
-        <DataGridColumn TItem="TxnItemProvider" Field="@nameof(TxnItemProvider.DistrictCode)" Caption="DistrictCode" Displayable="false"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.ItemProviderId)" Caption="ItemProviderID" Displayable="false"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.ProviderType)" Caption="ProviderType" Displayable="false"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.ProviderTypeName)" Caption="ProviderType"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.FirstName)" Caption="FirstName"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.MiddleName)" Caption="MiddleName"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.LastName)" Caption="LastName"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.MobileNo)" Caption="MobileNo"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.AltMobileNo)" Caption="AltMobileNo"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.EMail)" Caption="eMail"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.StateName)" Caption="State"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.DistrictName)" Caption="District"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.AddressLine1)" Caption="AddressLine1"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.AddressLine2)" Caption="AddressLine2"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.AddressLine3)" Caption="AddressLine3"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.Tehsil)" Caption="Tehsil"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.Pincode)" Caption="Pincode"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.StateCode)" Caption="StateCode" Displayable="false"></DataGridColumn>
+    <DataGridColumn TItem="VItemProvider" Field="@nameof(VItemProvider.DistrictCode)" Caption="DistrictCode" Displayable="false"></DataGridColumn>
 
-    </DataGrid>
+</DataGrid>
 
 }
 
 @code {
 
     int totalRecords = 0;
-    List<TxnItemProvider> itemProviders = null;
+    List<VItemProvider> itemProviders = null;
 
     protected override async Task OnInitializedAsync()
     {

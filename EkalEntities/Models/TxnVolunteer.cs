@@ -5,6 +5,11 @@ namespace EkalEntities.Models
 {
     public partial class TxnVolunteer
     {
+        public TxnVolunteer()
+        {
+            TxnVolunteerBankDetails = new HashSet<TxnVolunteerBankDetails>();
+        }
+
         public int VolunteerId { get; set; }
         public short? VolunteerTypeId { get; set; }
         public string FirstName { get; set; }
@@ -25,5 +30,9 @@ namespace EkalEntities.Models
         public string Pincode { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual MstEkai Ekai { get; set; }
+        public virtual MstVolunteerType VolunteerType { get; set; }
+        public virtual ICollection<TxnVolunteerBankDetails> TxnVolunteerBankDetails { get; set; }
     }
 }

@@ -4,6 +4,7 @@
 @inject ItemsService itemService;
 @inject ItemFormulaService itemFormulaService;
 @inject IToastService toastService;
+@inject UnitService unitService;
 
 <h3>Item Formula</h3>
 <hr />
@@ -14,18 +15,21 @@
 }
 @if (items != null)
 {
-<form>
+<EditForm Model="itemFormula">
 
     <div class="form-row">
         <div class="col-sm-4">
             <label for="inputEmail3" class="col-form-label text-right">Formula Name : </label>
-            <input type="text" class="form-control" placeholder="Enter Formula Name" @bind="@formulaName" />
+            <input type="text" class="form-control" placeholder="Enter Formula Name" @bind="@itemFormula.FormulaName" />
         </div>
      </div>
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label text-right">Item : </label>
-            <select id="ddlItems" class="form-control" @bind="@selectedItemID">
+            <label for="ddlItems" class="col-form-label text-right">Item : </label>
+            <CustomInputSelect id="ddlItems" class="form-control" 
+                               ValueChanged="@((int value) => ItemHasChanged(value))"
+                                   ValueExpression="@(() => selectedItemID)"
+                                   Value="@selectedItemID">
                 @if (items != null)
                 {
                     @foreach (var _item in items)
@@ -33,12 +37,13 @@
                         <option value=@_item.ItemId>@_item.ItemName</option>
                     }
                 }
-            </select>
+            </CustomInputSelect>
+            <label  class="col-form-label text-right">/@ItemUnit</label>
         </div>
 
         <div class="col-sm-4">
             <label for="inputEmail3" class="col-form-label text-right">For Qty : </label>
-            <input type="text" class="form-control" placeholder="Enter Qty" @bind="@forQty" />
+            <input type="text" class="form-control" placeholder="Enter Qty" @bind-value="@itemFormula.ForQty" />
         </div>
         <div class="col-sm-4" style="padding-top: 37px">
             
@@ -46,17 +51,19 @@
         </div>
     </div>
 
-</form>
+</EditForm>
 }
 
 
 @code {
-    int forQty = 0;
-    string formulaName = string.Empty;
-    List<TxnItemFormula> itemFormula = null;
+
+    List<TxnItemFormula> lstItemFormula = null;
     List<MstItems> items = null;
+    string ItemUnit = string.Empty;
 
     int selectedItemID = 0;
+
+    TxnItemFormula itemFormula = new TxnItemFormula();
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,18 +76,27 @@
         items.Insert(0, new MstItems { ItemId = 0, ItemName = "SELECT" });
     }
 
-
+    private async Task ItemHasChanged(int value)
+    {
+        selectedItemID = value;
+        if (value == 0)
+            items.Clear();
+        else
+        {
+            itemFormula.ItemId = value;
+            //Getting selected Item Unit
+            var selectedItemUnitID = items.Where(x => x.ItemId == selectedItemID).FirstOrDefault().UnitId;
+            var unitInfo = await unitService.GetAsync((short)selectedItemUnitID);
+            ItemUnit = unitInfo.Unit;
+        }
+    }
 
 
     public async Task Save()
     {
-        TxnItemFormula entity = new TxnItemFormula();
-        entity.FormulaName = formulaName;
-        entity.ItemId = selectedItemID;
-        entity.ForQty = forQty;
+        itemFormula.ItemId = selectedItemID;
 
-
-        var response = await itemFormulaService.AddAsync(entity);
+        var response = await itemFormulaService.AddAsync(itemFormula);
         if (response)
         {
             await LoadItemsAsync();
@@ -90,7 +106,7 @@
 
     private bool ValidateFields()
     {
-        if (string.IsNullOrEmpty(formulaName))
+        if (string.IsNullOrEmpty(itemFormula.FormulaName))
         {
             toastService.ShowError("Please enter formula name.");
             return false;
@@ -101,8 +117,8 @@
 
     private void ResetFields()
     {
-        forQty = 0;
-        formulaName = string.Empty;
+        itemFormula.ItemId = 0;
+        itemFormula.FormulaName = string.Empty;
         selectedItemID = 0;
     }
 

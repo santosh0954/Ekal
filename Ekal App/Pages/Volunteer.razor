@@ -1,35 +1,32 @@
 ﻿@page "/volunteer"
-@using EkalEntities.Models;
-@using Ekal_App.Data;
-@inject VolunteerService volunteerService;
-@inject RegionService regionService;
-@inject StateService stateService;
-@inject DistrictService districtService; 
+
+@inherits Ekal_App.CodeBase.VolunteerBase;
 
 <h3>Volunteer</h3>
 <hr />
 
-<form>   
+<EditForm Model="volunteer" OnValidSubmit="Save">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Name : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@FirstName">
+            <input type="text" class="form-control" id="firstName" placeholder="First Name" @bind="@volunteer.FirstName">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@MiddleName">
+            <input type="text" class="form-control" id="middleName" placeholder="Middle Name" @bind="@volunteer.MiddleName">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@LastName">
+            <input type="text" class="form-control" id="lastName" placeholder="Last Name" @bind="@volunteer.LastName">
         </div>
     </div>
+    
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Mobile No : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@MobileNo">
+            <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile No" @bind="@volunteer.MobileNo">
         </div>
         <label class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Alt No : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@AltMobileNo">
+            <input type="text" class="form-control" id="altMobileNo" placeholder="Alternate Mobile No" @bind="@volunteer.AltMobileNo">
         </div>
     </div>
 
@@ -47,195 +44,269 @@
                 </label>
             </div>
         </div>
-            <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">DOB :</label>
+        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">DOB :</label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@DOB">
+            <input type="date" class="form-control" id="dob" placeholder="Date of Birth" @bind="@volunteer.Dob">
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Aadhaar No : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="aadhaarNo" placeholder="Enter Aadhaar No" @bind="@AadhaarNo">
+            <input type="text" class="form-control" id="aadhaarNo" placeholder="Enter Aadhaar No" @bind="@volunteer.AadhaarNo">
         </div>
-        <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Region : </label>
+        <label for="ddlVolunteerTypes" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">Volunteer Type : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @if (regions != null)
+            <CustomInputSelect id="ddlVolunteerTypes" class="form-control"
+                               ValueChanged="@((short value) => VolunteerTypeHasChanged(value))"
+                               ValueExpression="@(() => volunteerTypeID)"
+                               Value="@volunteerTypeID">
+                <option value="00">--SELECT--</option>
+
+                @if (volunteerTypes != null)
                 {
-                    @foreach (var _region in regions)
+                    @foreach (var volunteerType in volunteerTypes)
                     {
-                        <option value=@_region.RegionId>@_region.RegionName</option>
+                        @if (volunteerType.VolunteerTypeId == volunteerTypeID)
+                        {
+                            <option selected value="@volunteerType.VolunteerTypeId">@volunteerType.VolunteerType</option>
+                        }
+                        else
+                        {
+                            <option value=@volunteerType.VolunteerTypeId>@volunteerType.VolunteerType</option>
+                        }
                     }
                 }
-            </select>
+
+            </CustomInputSelect>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <label class="mr-2">Select Ekai : </label>
+        <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
+            <Radio TValue="string" Value="@("1")">Prabhag</Radio>
+            <Radio TValue="string" Value="@("2")">Sambhag</Radio>
+            <Radio TValue="string" Value="@("3")">Bhag</Radio>
+            <Radio TValue="string" Value="@("4")">Anchal</Radio>
+            <Radio TValue="string" Value="@("5")">Sanch</Radio>
+            <Radio TValue="string" Value="@("6")">Gram Sangathan</Radio>
+        </RadioGroup>
+    </div>
+
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="ddlPrabhag" class="col-form-label">Select Prabhag : </label>
+            <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag"
+                               ValueChanged="@((int value)=>PrabhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedPrabhagID)"
+                               Value="@selectedPrabhagID">
+                <option value="0">--SELECT--</option>
+                @foreach (var _prabhag in prabhags)
+                {
+                    @if (_prabhag.EkaiId == selectedPrabhagID)
+                    {
+                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <div class="col-sm-4">
+            <label for="ddlSambhag" class="col-form-label">Select Sambhag : </label>
+            <CustomInputSelect id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag"
+                               ValueChanged="@((int value)=>SambhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedSambhagID)"
+                               Value="@selectedSambhagID">
+
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in sambhags)
+                {
+                    @if (_data.EkaiId == selectedSambhagID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <div class="col-sm-4">
+            <label for="ddlBhag" class="col-form-label">Select Bhag : </label>
+            <CustomInputSelect id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag"
+                               ValueChanged="@((int value)=>BhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedBhagID)"
+                               Value="@selectedBhagID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in bhags)
+                {
+                    @if (_data.EkaiId == selectedBhagID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="ddlAnchal" class="col-form-label">Select Anchal : </label>
+            <CustomInputSelect id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal"
+                               ValueChanged="@((int value)=>AnchalStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedAnchalID)"
+                               Value="@selectedAnchalID">
+                <option value="0">--SELECT--</option>
+                @foreach (var _data in anchals)
+                {
+                    @if (_data.EkaiId == selectedAnchalID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <div class="col-sm-4">
+            <label for="ddlSanch" class="col-form-label">Select Sanch : </label>
+            <CustomInputSelect id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch"
+                               ValueChanged="@((int value)=>SanchStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedSanchID)"
+                               Value="@selectedSanchID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in sanchs)
+                {
+                    @if (_data.EkaiId == selectedSanchID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <div class="col-sm-4">
+            <label for="ddlGram" class="col-form-label">Select Gram : </label>
+            <CustomInputSelect id="ddlGram" class="form-control form-control-sm" disabled="@DisableGram"
+                               ValueChanged="@((int value)=>GramStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedGramID)"
+                               Value="@selectedGramID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in gramSangathan)
+                {
+                    @if (_data.EkaiId == selectedGramID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="inputEmail3" class="col-sm-2 col-form-label">State : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @if (states != null)
+            <CustomInputSelect id="ddlStates" class="form-control"
+                               ValueChanged="@((string value) => StateHasChanged(value))"
+                               ValueExpression="@(() => stateCode)"
+                               Value="@stateCode">
+                <option value="00">--SELECT--</option>
+
+                @if(states !=null)
                 {
                     @foreach (var _state in states)
                     {
-                        <option value=@_state.StateCode>@_state.StateName</option>
+                        @if (_state.StateCode == stateCode)
+                        {
+                            <option selected value="@_state.StateCode">@_state.StateName</option>
+                        }
+                        else
+                        {
+                            <option value=@_state.StateCode>@_state.StateName</option>
+                        }
                     }
                 }
-            </select>
+
+            </CustomInputSelect>
         </div>
         <label for="inputEmail3" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">District : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
+            <CustomInputSelect id="ddlDistricts" class="form-control" @bind-Value="volunteer.DistrictCode">
+                <option value="0000">--SELECT--</option>
+
                 @if (districts != null)
                 {
                     @foreach (var _district in districts)
                     {
-                        <option value=@_district.DistrictCode>@_district.DistrictName</option>
+                        @if (_district.DistrictCode == volunteer.DistrictCode)
+                        {
+                            <option selected value="@_district.DistrictCode">@_district.DistrictName</option>
+                        }
+                        else
+                        {
+                            <option value=@_district.DistrictCode>@_district.DistrictName</option>
+                        }
                     }
                 }
-            </select>
+
+            </CustomInputSelect>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="inputEmail3" class="col-sm-2 col-form-label">Communication : </label>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@AddressLine1">
+            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@volunteer.AddressLine1">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@AddressLine2">
+            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@volunteer.AddressLine2">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@AddressLine3">
+            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@volunteer.AddressLine3">
         </div>
     </div>
+
     <div class="form-group row">
 
         <div class="col-lg-3 col-md-3 col-sm-10 offset-2">
-            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@Tehsil">
+            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@volunteer.Tehsil">
         </div>
         <div class="col-lg-3 col-md-3 col-sm-10">
-            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@Pincode">
+            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@volunteer.Pincode">
         </div>
         <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
-            <button @onclick="@Save" class="btn btn-success px-5" >Save</button>
+            <button type="submit" class="btn btn-success px-5">Save</button>
         </div>
-        @*<div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @foreach (var _class in classes)
-                {
-                    <option value=@_class.ClassName>@_class.ClassName</option>
-                }
-            </select>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-10">
-            <select class="form-control">
-                @foreach (var _class in classes)
-                {
-                    <option value=@_class.ClassName>@_class.ClassName</option>
-                }
-            </select>
-        </div>*@
     </div>
 
-    
-</form>
+</EditForm>
 
-
-@code {
-
-    public int VolunteerID { get; set; }
-    public string FirstName { get; set; }
-    public string MiddleName { get; set; }
-    public string LastName { get; set; }
-    public DateTime DOB { get; set; }
-    public string MobileNo { get; set; }
-    public string AltMobileNo { get; set; }
-    public string GenderMale { get; set; }
-    public string GenderFemale { get; set; }
-    public string AadhaarNo { get; set; }
-    public string AddressLine1 { get; set; }
-    public string AddressLine2 { get; set; }
-    public string AddressLine3 { get; set; }
-    public string Tehsil { get; set; }
-    public string Pincode { get; set; }
-
-
-
-    List<MstRegion> regions = null;
-    List<MstStates> states = null;
-    List<MstDistricts> districts = null;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadRegionAsync();
-        await LoadStatesAsync();
-        await LoadDistrictsAsync();
-
-    }
-
-    private async Task LoadRegionAsync()
-    {
-        regions = await regionService.GetAsync();
-    }
-
-    private async Task LoadStatesAsync()
-    {
-        states = await stateService.GetAsync();
-    }
-
-    private async Task LoadDistrictsAsync()
-    {
-        districts = await districtService.GetAsync();
-    }
-
-    public async Task Save()
-    {
-        TxnVolunteer entity = new TxnVolunteer();
-        entity.FirstName = FirstName;
-        entity.MiddleName = MiddleName;
-        entity.LastName = LastName;
-        entity.MobileNo = MobileNo;
-
-        if (!string.IsNullOrEmpty(GenderMale))
-            entity.Gender = "M";
-        else
-            entity.Gender = "F";
-
-        entity.Dob = DOB;
-
-        entity.AltMobileNo = AltMobileNo;
-        entity.AddressLine1 = AddressLine1;
-        entity.AddressLine2 = AddressLine2;
-        entity.AddressLine3 = AddressLine3;
-        entity.Tehsil = Tehsil;
-        entity.Pincode = Pincode;
-
-
-        var response = await volunteerService.AddAsync(entity);
-        if (response)
-        {
-            //await LoadAsync();
-            ResetFields();
-        }
-    }
-
-    private void ResetFields()
-    {
-        VolunteerID = 0;
-        FirstName = string.Empty;
-        MiddleName = string.Empty;
-        LastName = string.Empty;
-        MobileNo = string.Empty;
-        AltMobileNo = string.Empty;
-        AddressLine1 = string.Empty;
-        AddressLine2 = string.Empty;
-        AddressLine3 = string.Empty;
-        Pincode = string.Empty;
-    }
-}
 
 

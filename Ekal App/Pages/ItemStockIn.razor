@@ -1,10 +1,6 @@
 ﻿@page "/itemStockIn";
-@using EkalEntities.Models;
-@using Ekal_App.Data;
-@inject ItemsService itemService;
-@inject ItemStockService itemStockService;
-@inject EkaiService ekaiService; 
-@inject ItemProviderService itemProviderService;
+
+@inherits Ekal_App.CodeBase.StockInBase; 
 
 <h3>Item-StockIn</h3>
 <hr />
@@ -12,11 +8,11 @@
 
 @if (entities != null)
 {
-<form>
+<EditForm Model="itemStock">
     <div class="form-row">
         <label for="inputEmail3" class="mr-2">Select Source : </label>
         <RadioGroup TValue="string" Name="rbtnStockSource" Inline="true" CheckedValueChanged="@rbtnStockSource_OnCheckedValueChanged">
-            <Radio TValue="string" Value="@("P")">Purchase</Radio>
+            <Radio TValue="string" Value="@("M")">Purchase</Radio>
             <Radio TValue="string" Value="@("D")">Donation</Radio>
         </RadioGroup>
     </div>
@@ -24,6 +20,7 @@
         <div class="col-sm-4">
             <label for="inputEmail3" class=" col-form-label">Select Provider : </label>
             <select id="ddlProviders" class="form-control" @onchange="ddlProviders_SelectedIndexChanged">
+                <option value="0">--SELECT--</option>
                 @if (itemProviders != null)
                 {
                     @foreach (var _itemProvider in itemProviders)
@@ -56,8 +53,9 @@
             </select>
         </div>
     </div>
-    <div class="form-row my-3">
-        <label for="inputEmail3" class="mr-3">Select Ekai : </label>
+
+    <div class="form-row">
+        <label class="mr-2">Select Ekai : </label>
         <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
             <Radio TValue="string" Value="@("1")">Prabhag</Radio>
             <Radio TValue="string" Value="@("2")">Sambhag</Radio>
@@ -70,67 +68,141 @@
 
     <div class="form-row">
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Prabhag : </label>
-            <select id="ddlPrabhag" class="form-control" @onchange="ddlPrabhag_SelectedIndexChanged">
-                @if (prabhags != null)
+            <label for="ddlPrabhag" class="col-form-label">Select Prabhag : </label>
+            <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag"
+                               ValueChanged="@((int value)=>PrabhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedPrabhagID)"
+                               Value="@selectedPrabhagID">
+                <option value="0">--SELECT--</option>
+                @foreach (var _prabhag in prabhags)
                 {
-                    @foreach (var _prabhag in prabhags)
+                    @if (_prabhag.EkaiId == selectedPrabhagID)
+                    {
+                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
                     }
                 }
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <label for="inputEmail3" class=" col-form-label">Select Sambhag : </label>
-            <select id="ddlSambhag" class="form-control" @onchange="ddlSambhag_SelectedIndexChanged">
-                @if (sambhags != null)
-                {
-                    @foreach (var _data in sambhags)
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
 
-                    }
-                }
-            </select>
+            </CustomInputSelect>
         </div>
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Bhag : </label>
-            <select id="ddlBhag" class="form-control" @onchange="ddlBhag_SelectedIndexChanged">
-                @if (bhags != null)
+            <label for="ddlSambhag" class="col-form-label">Select Sambhag : </label>
+            <CustomInputSelect id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag"
+                               ValueChanged="@((int value)=>SambhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedSambhagID)"
+                               Value="@selectedSambhagID">
+
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in sambhags)
                 {
-                    @foreach (var _data in bhags)
+                    @if (_data.EkaiId == selectedSambhagID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_data.EkaiId>@_data.EkaiName</option>
                     }
                 }
-            </select>
+
+            </CustomInputSelect>
         </div>
         <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Anchal : </label>
-            <select id="ddlAnchal" class="form-control" @onchange="ddlAnchal_SelectedIndexChanged">
-                @if (anchals != null)
+            <label for="ddlBhag" class="col-form-label">Select Bhag : </label>
+            <CustomInputSelect id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag"
+                               ValueChanged="@((int value)=>BhagStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedBhagID)"
+                               Value="@selectedBhagID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in bhags)
                 {
-                    @foreach (var _data in anchals)
+                    @if (_data.EkaiId == selectedBhagID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
                     {
                         <option value=@_data.EkaiId>@_data.EkaiName</option>
                     }
                 }
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Sanch : </label>
-            <select id="ddlSanch" class="form-control" @onchange="ddlSanch_SelectedIndexChanged">
-                @if (sanchs != null)
-                {
-                    @foreach (var _data in sanchs)
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                }
-            </select>
+
+            </CustomInputSelect>
         </div>
     </div>
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="ddlAnchal" class="col-form-label">Select Anchal : </label>
+            <CustomInputSelect id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal"
+                               ValueChanged="@((int value)=>AnchalStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedAnchalID)"
+                               Value="@selectedAnchalID">
+                <option value="0">--SELECT--</option>
+                @foreach (var _data in anchals)
+                {
+                    @if (_data.EkaiId == selectedAnchalID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <div class="col-sm-4">
+            <label for="ddlSanch" class="col-form-label">Select Sanch : </label>
+            <CustomInputSelect id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch"
+                               ValueChanged="@((int value)=>SanchStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedSanchID)"
+                               Value="@selectedSanchID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in sanchs)
+                {
+                    @if (_data.EkaiId == selectedSanchID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <div class="col-sm-4">
+            <label for="ddlGram" class="col-form-label">Select Gram : </label>
+            <CustomInputSelect id="ddlGram" class="form-control form-control-sm" disabled="@DisableGram"
+                               ValueChanged="@((int value)=>GramStateHasChanged(value))"
+                               ValueExpression="@(()=> selectedGramID)"
+                               Value="@selectedGramID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var _data in gramSangathan)
+                {
+                    @if (_data.EkaiId == selectedGramID)
+                    {
+                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                    else
+                    {
+                        <option value=@_data.EkaiId>@_data.EkaiName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+    </div>
+
+
     <div class="input-group my-3">
         <label for="inputEmail3" class="col-sm-2 col-form-label">Enter Qty : </label>
         <input type="text" class="form-control" placeholder="Enter Quantity" @bind="@Qty" />
@@ -143,7 +215,7 @@
         </div>
     </div>
 
-</form>
+</EditForm>
 }
 
 @if (entities == null)
@@ -175,213 +247,7 @@ else
     </div>*@
 }
 
-@code {
-    int itemID;
-    int ItemProviderID;
-    int EkaiID;
-    decimal Qty;
-    decimal Rate;
-    decimal Amount;
 
-    int selectedPrabhagID = 0;
-    int selectedSambhagID = 0;
-    int selectedBhagID = 0;
-    int selectedAnchalID = 0;
-    int selectedSanchID = 0;
-
-    int selectedItemID = 0;
-    int selectedProviderID = 0;
-    string itemStatus = string.Empty;
-    string selectedEkaiType = string.Empty;
-
-    string selectedProviderType = string.Empty;
-
-    int totalRecords = 0;
-
-    List<MstItems> items;
-
-    List<TxnItemStock> entities = null;
-    List<TxnItemProvider> itemProviders = null;
-
-    List<MstEkai> prabhags = null;
-    List<MstEkai> sambhags = null;
-    List<MstEkai> bhags = null;
-    List<MstEkai> anchals = null;
-    List<MstEkai> sanchs = null;
-    List<MstEkai> gramSangathan = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAsync();
-        await LoadItemsAsync();
-        await LoadPrabhagsAsync();
-        await LoadItemProvider();
-    }
-
-    private async Task LoadAsync()
-    {
-        entities = await itemStockService.GetAsync();
-        totalRecords = entities.Count();
-    }
-
-    private async Task LoadItemsAsync()
-    {
-        items = await itemService.GetAsync();
-        items.Insert(0, new MstItems { ItemId = 0, ItemName = "SELECT" });
-    }
-
-    private async Task LoadItemProvider()
-    {
-        var allData = await itemProviderService.GetAsync();
-        if (!string.IsNullOrEmpty(selectedProviderType))
-        {
-            itemProviders = allData.Where(x => x.ProviderType == selectedProviderType).ToList();
-            itemProviders.Insert(0, new TxnItemProvider { ItemProviderId = 0, FirstName = "SELECT" });
-        }
-        StateHasChanged();
-    }
-
-    private async Task LoadPrabhagsAsync()
-    {
-        prabhags = await ekaiService.GetAsync();
-        prabhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
-    }
-
-    private async Task LoadSamabhagsAsync(int prabhagID)
-    {
-        prabhags = await ekaiService.GetAsync();
-        sambhags = prabhags.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
-        sambhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
-    }
-
-    private async Task LoadBhagsAsync(int sambhagID)
-    {
-        var allData = await ekaiService.GetAsync();
-        bhags = prabhags.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
-        bhags.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
-    }
-
-    private async Task LoadAnchalsAsync(int bhagID)
-    {
-        var allData = await ekaiService.GetAsync();
-        anchals = prabhags.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
-        anchals.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
-    }
-
-    private async Task LoadSanchsAsync(int anchalID)
-    {
-        var allData = await ekaiService.GetAsync();
-        sanchs = prabhags.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
-        sanchs.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
-    }
-
-    private async Task LoadGramSangathansAsync(int sanchID)
-    {
-        var allData = await ekaiService.GetAsync();
-        gramSangathan = prabhags.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
-        gramSangathan.Insert(0, new MstEkai { EkaiId = 0, EkaiName = "SELECT" });
-    }
-
-    public async Task Save()
-    {
-        TxnItemStock entity = new TxnItemStock();
-        entity.ItemId = selectedItemID;
-        entity.Qty = Qty;
-        entity.Rate = Rate;
-        entity.TotalAmount = Amount;
-        entity.ItemProviderId = selectedProviderID;
-        entity.Status = itemStatus;
-
-        var response = await itemStockService.AddAsync(entity);
-        if (response)
-        {
-            await LoadAsync();
-            ResetFields();
-        }
-    }
-
-    private void ResetFields()
-    {
-        itemID = 0;
-        Qty = 0;
-    }
-
-    #region Events
-
-    void rbtnEkai_OnCheckedValueChanged(string value)
-    {
-        selectedEkaiType = value;
-    }
-
-    async void rbtnStockSource_OnCheckedValueChanged(string value)
-    {
-        selectedProviderType = value;
-        await LoadItemProvider();
-
-    }
-
-    void ddlItems_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedItemID = Convert.ToInt32(e.Value);
-    }
-
-    void ddlItemStatus_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        itemStatus = Convert.ToString(e.Value);
-    }
-
-    void ddlProviders_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedProviderID = Convert.ToInt32(e.Value);
-    }
-
-    async void ddlPrabhag_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedPrabhagID = Convert.ToInt32(e.Value);
-        if (selectedPrabhagID > 0)
-        {
-            await LoadSamabhagsAsync(selectedPrabhagID);
-        }
-    }
-
-    async void ddlSambhag_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedSambhagID = Convert.ToInt32(e.Value);
-        if (selectedSambhagID > 0)
-        {
-            await LoadBhagsAsync(selectedSambhagID);
-        }
-    }
-
-    async void ddlBhag_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedBhagID = Convert.ToInt32(e.Value);
-        if (selectedBhagID > 0)
-        {
-            await LoadAnchalsAsync(selectedBhagID);
-        }
-    }
-
-    async void ddlAnchal_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedAnchalID = Convert.ToInt32(e.Value);
-        if (selectedAnchalID > 0)
-        {
-            await LoadSanchsAsync(selectedAnchalID);
-        }
-    }
-
-    async void ddlSanch_SelectedIndexChanged(ChangeEventArgs e)
-    {
-        selectedSanchID = Convert.ToInt32(e.Value);
-        if (selectedSanchID > 0)
-        {
-            await LoadGramSangathansAsync(selectedSanchID);
-        }
-    }
-
-    #endregion
-}
 
 
 

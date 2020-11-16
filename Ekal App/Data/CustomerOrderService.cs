@@ -1,37 +1,37 @@
-﻿using System;
+﻿using EkalEntities.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EkalEntities.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ekal_App.Data
 {
-    public class ItemProviderService
+    public class CustomerOrderService
     {
-        public async Task<List<VItemProvider>> GetAsync()
+        public async Task<List<TxnCustomerOrder>> GetAsync()
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.VItemProvider.ToListAsync();
+                return await dbContext.TxnCustomerOrder.ToListAsync();
             }
         }
 
-        public async Task<TxnItemProvider> GetAsync(int id)
+        public async Task<TxnCustomerOrder> GetAsync(int id)
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.TxnItemProvider.Where(x => x.ItemProviderId == id).FirstOrDefaultAsync();
+                return await dbContext.TxnCustomerOrder.Where(x => x.CustomerOrderId == id).FirstOrDefaultAsync();
             }
         }
 
-        public async Task<bool> AddAsync(TxnItemProvider entity)
+        public async Task<bool> AddAsync(TxnCustomerOrder entity)
         {
             using (EkalContext dbContext = new EkalContext())
             {
                 try
                 {
-                    await dbContext.TxnItemProvider.AddAsync(entity);
+                    await dbContext.TxnCustomerOrder.AddAsync(entity);
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -48,8 +48,8 @@ namespace Ekal_App.Data
             {
                 try
                 {
-                    var tmpRecord = await dbContext.TxnItemProvider.Where(x => x.ItemProviderId == id).FirstOrDefaultAsync();
-                    dbContext.TxnItemProvider.Remove(tmpRecord);
+                    var tmpRecord = await dbContext.TxnCustomerOrder.Where(x => x.CustomerOrderId == id).FirstOrDefaultAsync();
+                    dbContext.TxnCustomerOrder.Remove(tmpRecord);
                     dbContext.SaveChanges();
                     return true;
                 }

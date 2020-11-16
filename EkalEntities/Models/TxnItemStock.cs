@@ -15,5 +15,8 @@ namespace EkalEntities.Models
         public string Status { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual MstItems Item { get; set; }
+        public virtual TxnItemProvider ItemProvider { get; set; }
     }
 }

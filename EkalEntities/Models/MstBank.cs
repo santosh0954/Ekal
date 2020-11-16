@@ -5,9 +5,16 @@ namespace EkalEntities.Models
 {
     public partial class MstBank
     {
-        public int BankId { get; set; }
+        public MstBank()
+        {
+            TxnVolunteerBankDetails = new HashSet<TxnVolunteerBankDetails>();
+        }
+
+        public short BankId { get; set; }
         public string BankName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
+
+        public virtual ICollection<TxnVolunteerBankDetails> TxnVolunteerBankDetails { get; set; }
     }
 }
