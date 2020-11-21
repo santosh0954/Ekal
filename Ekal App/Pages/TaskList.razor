@@ -21,9 +21,42 @@ else
         <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.TaskName)" Caption="TaskName"></DataGridColumn>
         <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.ForItemId)" Caption="ForItemID" Displayable="false"></DataGridColumn>
         <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.ForQty)" Caption="ForQty"></DataGridColumn>
-        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.WorkType)" Caption="WorkType"></DataGridColumn>
-        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.EstimatedStartDate)" Caption="EstStartDate"></DataGridColumn>
-        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.EstimatedEndDate)" Caption="EstEndDate"></DataGridColumn>
+        <DataGridColumn TItem="TxnTasks" Field="@nameof(TxnTasks.WorkType)" Caption="WorkType">
+            <DisplayTemplate>
+                @{ 
+                    var workType = (context as TxnTasks).WorkType;
+                    if (workType != null)
+                    {
+                        if (workType == "G")
+                        {
+                            @($"Group");
+                        }
+                        else
+                        {
+                            @($"Individual");
+                            }
+                        }
+                    }
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridDateColumn TItem="TxnTasks" Field="@nameof(TxnTasks.EstimatedStartDate)" Caption="EstStartDate">
+            <DisplayTemplate>
+                @{ 
+                    var startDate = (context as TxnTasks).EstimatedStartDate;
+                    if (startDate != null)
+                        @($"{ startDate.Value.ToShortDateString()}");
+                }
+            </DisplayTemplate>
+        </DataGridDateColumn>
+        <DataGridDateColumn TItem="TxnTasks" Field="@nameof(TxnTasks.EstimatedEndDate)" Caption="EstEndDate">
+            <DisplayTemplate>
+                @{
+                    var endDate = (context as TxnTasks).EstimatedEndDate;
+                    if (endDate != null)
+                        @($"{ endDate.Value.ToShortDateString()}");
+                }
+            </DisplayTemplate>
+        </DataGridDateColumn>
         
     </DataGrid>
 

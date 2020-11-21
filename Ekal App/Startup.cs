@@ -14,6 +14,8 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.JSInterop;
 using Blazored.Toast;
+using EkalEntities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ekal_App
 {
@@ -53,6 +55,7 @@ namespace Ekal_App
             services.AddSingleton<VolunteerService>();
             services.AddSingleton<VolunteerTypeService>();
             services.AddSingleton<CustomerOrderService>();
+            services.AddSingleton<CustomerAddressService>();
 
             services.AddBlazoredToast();
 
@@ -61,14 +64,16 @@ namespace Ekal_App
             services.AddBlazorise(option =>
             {
                 option.ChangeTextOnKeyPress = true;
-            }).AddBootstrapProviders().AddFontAwesomeIcons();
+            }).AddBootstrapProviders()
+            .AddFontAwesomeIcons();
 
             services.AddServerSideBlazor().AddCircuitOptions(o =>
             {
                 o.DetailedErrors = true;
             });
 
-
+            services.AddDbContext<EkalContext>(options => 
+                                options.UseSqlServer(Configuration.GetConnectionString("EkalDevDatabase")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,7 +8,6 @@ namespace EkalEntities.Models
         public int ItemProviderId { get; set; }
         public string ProviderType { get; set; }
         public string ProviderTypeName { get; set; }
-
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }

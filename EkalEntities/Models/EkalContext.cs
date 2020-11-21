@@ -26,6 +26,7 @@ namespace EkalEntities.Models
         public virtual DbSet<MstUnit> MstUnit { get; set; }
         public virtual DbSet<MstVolunteerType> MstVolunteerType { get; set; }
         public virtual DbSet<TxnCustomer> TxnCustomer { get; set; }
+        public virtual DbSet<TxnCustomerDeliveryAddress> TxnCustomerDeliveryAddress { get; set; }
         public virtual DbSet<TxnCustomerOrder> TxnCustomerOrder { get; set; }
         public virtual DbSet<TxnCustomerOrderDetails> TxnCustomerOrderDetails { get; set; }
         public virtual DbSet<TxnItemFormula> TxnItemFormula { get; set; }
@@ -36,8 +37,13 @@ namespace EkalEntities.Models
         public virtual DbSet<TxnVolunteer> TxnVolunteer { get; set; }
         public virtual DbSet<TxnVolunteerAttendance> TxnVolunteerAttendance { get; set; }
         public virtual DbSet<TxnVolunteerBankDetails> TxnVolunteerBankDetails { get; set; }
+        public virtual DbSet<VCustomerOrderWithDetails> VCustomerOrderWithDetails { get; set; }
+        public virtual DbSet<VDistricts> VDistricts { get; set; }
         public virtual DbSet<VEkai> VEkai { get; set; }
+        public virtual DbSet<VItemFormula> VItemFormula { get; set; }
+        public virtual DbSet<VItemFormulaDetails> VItemFormulaDetails { get; set; }
         public virtual DbSet<VItemProvider> VItemProvider { get; set; }
+        public virtual DbSet<VItemStock> VItemStock { get; set; }
         public virtual DbSet<VItems> VItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -141,6 +147,8 @@ namespace EkalEntities.Models
                 entity.Property(e => e.ItemName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.SaleRate).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.UnitId).HasColumnName("UnitID");
 
@@ -292,6 +300,57 @@ namespace EkalEntities.Models
                 entity.Property(e => e.Tehsil)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TxnCustomerDeliveryAddress>(entity =>
+            {
+                entity.HasKey(e => e.CustomerDeliveryAddressId);
+
+                entity.Property(e => e.CustomerDeliveryAddressId).HasColumnName("CustomerDeliveryAddressID");
+
+                entity.Property(e => e.AddressLine1)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddressLine2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddressLine3)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+
+                entity.Property(e => e.AddressType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.DistrictCode)
+                    .HasMaxLength(4)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Pincode)
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StateCode)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Tehsil)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.TxnCustomerDeliveryAddress)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK_TxnCustomerDeliveryAddress_TxnCustomer");
             });
 
             modelBuilder.Entity<TxnCustomerOrder>(entity =>
@@ -674,13 +733,81 @@ namespace EkalEntities.Models
                     .HasConstraintName("FK_TxnVolunteerBankDetails_TxnVolunteer");
             });
 
+            modelBuilder.Entity<VCustomerOrderWithDetails>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vCustomerOrderWithDetails");
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+                entity.Property(e => e.ItemName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.OrderDate).HasColumnType("date");
+
+                entity.Property(e => e.OrderDetailsId).HasColumnName("OrderDetailsID");
+
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.OrderNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Rate).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Unit)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VDistricts>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vDistricts");
+
+                entity.Property(e => e.DistrictCode)
+                    .IsRequired()
+                    .HasMaxLength(4)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DistrictName)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StateCode)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.StateName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<VEkai>(entity =>
             {
                 entity.HasNoKey();
 
                 entity.ToView("vEkai");
 
+                entity.Property(e => e.Anchal)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Bhag)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Gram)
                     .HasMaxLength(128)
                     .IsUnicode(false);
 
@@ -692,6 +819,54 @@ namespace EkalEntities.Models
 
                 entity.Property(e => e.Sambhag)
                     .HasMaxLength(128)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Sanch)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VItemFormula>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vItemFormula");
+
+                entity.Property(e => e.ForQty).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.FormulaName)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ItemFormulaId).HasColumnName("ItemFormulaID");
+
+                entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+                entity.Property(e => e.ItemName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VItemFormulaDetails>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vItemFormulaDetails");
+
+                entity.Property(e => e.ItemFormulaDetailsId).HasColumnName("ItemFormulaDetailsID");
+
+                entity.Property(e => e.ItemFormulaId).HasColumnName("ItemFormulaID");
+
+                entity.Property(e => e.ItemName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.SubItemId).HasColumnName("SubItemID");
+
+                entity.Property(e => e.Unit)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -756,6 +931,11 @@ namespace EkalEntities.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.ProviderType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ProviderTypeName)
                     .HasMaxLength(8)
                     .IsUnicode(false);
 
@@ -772,6 +952,21 @@ namespace EkalEntities.Models
                 entity.Property(e => e.Tehsil)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VItemStock>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("vItemStock");
+
+                entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+                entity.Property(e => e.ItemName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TotalQty).HasColumnType("decimal(38, 2)");
             });
 
             modelBuilder.Entity<VItems>(entity =>

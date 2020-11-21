@@ -10,5 +10,8 @@ namespace EkalEntities.Models
         public string Prabhag { get; set; }
         public string Sambhag { get; set; }
         public string Bhag { get; set; }
+        public string Anchal { get; set; }
+        public string Sanch { get; set; }
+        public string Gram { get; set; }
     }
 }

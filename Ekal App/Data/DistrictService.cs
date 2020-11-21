@@ -9,11 +9,11 @@ namespace Ekal_App.Data
 {
     public class DistrictService
     {
-        public async Task<List<MstDistricts>> GetAsync()
+        public async Task<List<VDistricts>> GetAsync()
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.MstDistricts.ToListAsync();
+                return await dbContext.VDistricts.ToListAsync();
             }
         }
 

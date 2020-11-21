@@ -1,0 +1,51 @@
+﻿@page "/customerOrderList"
+@using EkalEntities.Models;
+@inject Ekal_App.Data.CustomerOrderService customerOrderService; 
+
+<h3>Customer Orders</h3>
+<hr />
+
+
+@if (customerOrderDetails == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DataGrid TItem="VCustomerOrderWithDetails" Data="@customerOrderDetails" Editable="true" EditMode="DataGridEditMode.Form" Sortable="true" ShowPager="true" PageSize="10" Filterable="true"
+              Style="overflow-x:scroll">
+
+        <DataGridCommandColumn TItem="VCustomerOrderWithDetails">
+            <EditCommandTemplate >
+                <Button Color="Color.Secondary" Clicked="@context.Clicked" >Edit</Button>
+            </EditCommandTemplate>
+            <DeleteCommandTemplate>
+                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+            </DeleteCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.OrderDetailsId)" Caption="VolunteerID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.OrderId)" Caption="OrderID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.OrderNo)" Caption="OrderName"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.OrderDate)" Caption="OrderDate"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.ItemId)" Caption="ItemID" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.ItemName)" Caption="ItemName"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.Qty)" Caption="Qty"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.Unit)" Caption="Unit"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.Rate)" Caption="Rate"></DataGridColumn>
+        <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.Amount)" Caption="Amount"></DataGridColumn>
+    </DataGrid>
+}
+
+@code {
+    List<VCustomerOrderWithDetails> customerOrderDetails = new List<VCustomerOrderWithDetails>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        customerOrderDetails = await customerOrderService.GetAsync();
+    }
+}

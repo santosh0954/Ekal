@@ -1,222 +1,9 @@
 ﻿@page "/itemStockIn";
 
-@inherits Ekal_App.CodeBase.StockInBase; 
+@inherits Ekal_App.CodeBase.StockInBase;
 
 <h3>Item-StockIn</h3>
 <hr />
-
-
-@if (entities != null)
-{
-<EditForm Model="itemStock">
-    <div class="form-row">
-        <label for="inputEmail3" class="mr-2">Select Source : </label>
-        <RadioGroup TValue="string" Name="rbtnStockSource" Inline="true" CheckedValueChanged="@rbtnStockSource_OnCheckedValueChanged">
-            <Radio TValue="string" Value="@("M")">Purchase</Radio>
-            <Radio TValue="string" Value="@("D")">Donation</Radio>
-        </RadioGroup>
-    </div>
-    <div class="form-row">
-        <div class="col-sm-4">
-            <label for="inputEmail3" class=" col-form-label">Select Provider : </label>
-            <select id="ddlProviders" class="form-control" @onchange="ddlProviders_SelectedIndexChanged">
-                <option value="0">--SELECT--</option>
-                @if (itemProviders != null)
-                {
-                    @foreach (var _itemProvider in itemProviders)
-                    {
-                        <option value=@_itemProvider.ItemProviderId>@_itemProvider.FirstName @_itemProvider.MiddleName @_itemProvider.LastName</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Select Item : </label>
-            <select id="ddlItems" class="form-control" @onchange="ddlItems_SelectedIndexChanged">
-                @if (items != null)
-                {
-                    @foreach (var _item in items)
-                    {
-                        <option value=@_item.ItemId>@_item.ItemName</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label">Item Status : </label>
-            <select id="ddlItemStatus" class="form-control" @onchange="ddlItems_SelectedIndexChanged">
-                <option value="0">SELECT</option>
-                <option value="R">Raw Material</option>
-                <option value="S">Semi Finished</option>
-                <option value="F">Finished</option>
-                <option value="D">Ready to Ship</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="form-row">
-        <label class="mr-2">Select Ekai : </label>
-        <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
-            <Radio TValue="string" Value="@("1")">Prabhag</Radio>
-            <Radio TValue="string" Value="@("2")">Sambhag</Radio>
-            <Radio TValue="string" Value="@("3")">Bhag</Radio>
-            <Radio TValue="string" Value="@("4")">Anchal</Radio>
-            <Radio TValue="string" Value="@("5")">Sanch</Radio>
-            <Radio TValue="string" Value="@("6")">Gram Sangathan</Radio>
-        </RadioGroup>
-    </div>
-
-    <div class="form-row">
-        <div class="col-sm-4">
-            <label for="ddlPrabhag" class="col-form-label">Select Prabhag : </label>
-            <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag"
-                               ValueChanged="@((int value)=>PrabhagStateHasChanged(value))"
-                               ValueExpression="@(()=> selectedPrabhagID)"
-                               Value="@selectedPrabhagID">
-                <option value="0">--SELECT--</option>
-                @foreach (var _prabhag in prabhags)
-                {
-                    @if (_prabhag.EkaiId == selectedPrabhagID)
-                    {
-                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
-                    }
-                    else
-                    {
-                        <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
-                    }
-                }
-
-            </CustomInputSelect>
-        </div>
-        <div class="col-sm-4">
-            <label for="ddlSambhag" class="col-form-label">Select Sambhag : </label>
-            <CustomInputSelect id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag"
-                               ValueChanged="@((int value)=>SambhagStateHasChanged(value))"
-                               ValueExpression="@(()=> selectedSambhagID)"
-                               Value="@selectedSambhagID">
-
-                <option value="0">--SELECT--</option>
-
-                @foreach (var _data in sambhags)
-                {
-                    @if (_data.EkaiId == selectedSambhagID)
-                    {
-                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                    else
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                }
-
-            </CustomInputSelect>
-        </div>
-        <div class="col-sm-4">
-            <label for="ddlBhag" class="col-form-label">Select Bhag : </label>
-            <CustomInputSelect id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag"
-                               ValueChanged="@((int value)=>BhagStateHasChanged(value))"
-                               ValueExpression="@(()=> selectedBhagID)"
-                               Value="@selectedBhagID">
-                <option value="0">--SELECT--</option>
-
-                @foreach (var _data in bhags)
-                {
-                    @if (_data.EkaiId == selectedBhagID)
-                    {
-                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                    else
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                }
-
-            </CustomInputSelect>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="col-sm-4">
-            <label for="ddlAnchal" class="col-form-label">Select Anchal : </label>
-            <CustomInputSelect id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal"
-                               ValueChanged="@((int value)=>AnchalStateHasChanged(value))"
-                               ValueExpression="@(()=> selectedAnchalID)"
-                               Value="@selectedAnchalID">
-                <option value="0">--SELECT--</option>
-                @foreach (var _data in anchals)
-                {
-                    @if (_data.EkaiId == selectedAnchalID)
-                    {
-                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                    else
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                }
-
-            </CustomInputSelect>
-        </div>
-        <div class="col-sm-4">
-            <label for="ddlSanch" class="col-form-label">Select Sanch : </label>
-            <CustomInputSelect id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch"
-                               ValueChanged="@((int value)=>SanchStateHasChanged(value))"
-                               ValueExpression="@(()=> selectedSanchID)"
-                               Value="@selectedSanchID">
-                <option value="0">--SELECT--</option>
-
-                @foreach (var _data in sanchs)
-                {
-                    @if (_data.EkaiId == selectedSanchID)
-                    {
-                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                    else
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                }
-
-            </CustomInputSelect>
-        </div>
-        <div class="col-sm-4">
-            <label for="ddlGram" class="col-form-label">Select Gram : </label>
-            <CustomInputSelect id="ddlGram" class="form-control form-control-sm" disabled="@DisableGram"
-                               ValueChanged="@((int value)=>GramStateHasChanged(value))"
-                               ValueExpression="@(()=> selectedGramID)"
-                               Value="@selectedGramID">
-                <option value="0">--SELECT--</option>
-
-                @foreach (var _data in gramSangathan)
-                {
-                    @if (_data.EkaiId == selectedGramID)
-                    {
-                        <option selected value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                    else
-                    {
-                        <option value=@_data.EkaiId>@_data.EkaiName</option>
-                    }
-                }
-
-            </CustomInputSelect>
-        </div>
-    </div>
-
-
-    <div class="input-group my-3">
-        <label for="inputEmail3" class="col-sm-2 col-form-label">Enter Qty : </label>
-        <input type="text" class="form-control" placeholder="Enter Quantity" @bind="@Qty" />
-        <label for="inputEmail3" class="col-sm-2 col-form-label">Enter Rate : </label>
-        <input type="text" class="form-control" placeholder="Enter Rate" @bind="@Rate" />
-        <label for="inputEmail3" class="col-sm-2 col-form-label">=</label>
-        <input type="text" class="form-control" placeholder="Amount" @bind="@Amount" />
-        <div class="input-group-append">
-            <button @onclick="@Save" class="btn btn-warning">Add</button>
-        </div>
-    </div>
-
-</EditForm>
-}
 
 @if (entities == null)
 {
@@ -224,28 +11,217 @@
 }
 else
 {
-    @*<div class="align-self-auto">
+    <EditForm Model="itemStock">
+        <div class="form-row">
+            <label for="inputEmail3" class="mr-2">Select Source : </label>
+            <RadioGroup TValue="string" Name="rbtnStockSource" Inline="true" CheckedValueChanged="@rbtnStockSource_OnCheckedValueChanged">
+                <Radio TValue="string" Value="@("M")">Purchase</Radio>
+                <Radio TValue="string" Value="@("D")">Donation</Radio>
+            </RadioGroup>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-4">
+                <label for="inputEmail3" class=" col-form-label">Select Provider : </label>
+                <select id="ddlProviders" class="form-control" @onchange="ddlProviders_SelectedIndexChanged">
+                    <option value="0">--SELECT--</option>
+                    @if (itemProviders != null)
+                    {
+                        @foreach (var _itemProvider in itemProviders)
+                        {
+                            <option value=@_itemProvider.ItemProviderId>@_itemProvider.FirstName @_itemProvider.MiddleName @_itemProvider.LastName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <label for="inputEmail3" class="col-form-label">Select Item : </label>
+                <select id="ddlItems" class="form-control" @onchange="ddlItems_SelectedIndexChanged">
+                    @if (items != null)
+                    {
+                        @foreach (var _item in items)
+                        {
+                            <option value=@_item.ItemId>@_item.ItemName</option>
+                        }
+                    }
+                </select>
+            </div>
 
-        <h5 class="text-primary">Total Records : @totalRecords</h5>
-        <table class="table table-bordered table-hover table-responsive table-striped pre-scrollable">
-            <thead>
-                <tr>
-                    <th class="d-none">BankID</th>
-                    <th>Bank</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var entity in entities)
-                {
-                    <tr>
-                        <td class="d-none">@entity.BankId</td>
-                        <td>@entity.BankName</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>*@
+            <div class="col-sm-4">
+                <label for="inputEmail3" class="col-form-label">Item Status : </label>
+                <select id="ddlItemStatus" class="form-control" @onchange="ddlItemStatus_SelectedIndexChanged">
+                    <option value="0">SELECT</option>
+                    <option value="R">Raw Material</option>
+                    <option value="S">Semi Finished</option>
+                    <option value="F">Finished</option>
+                    <option value="D">Ready to Ship</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label class="mr-2">Select Ekai : </label>
+            <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
+                <Radio TValue="string" Value="@("1")">Prabhag</Radio>
+                <Radio TValue="string" Value="@("2")">Sambhag</Radio>
+                <Radio TValue="string" Value="@("3")">Bhag</Radio>
+                <Radio TValue="string" Value="@("4")">Anchal</Radio>
+                <Radio TValue="string" Value="@("5")">Sanch</Radio>
+                <Radio TValue="string" Value="@("6")">Gram Sangathan</Radio>
+            </RadioGroup>
+        </div>
+
+        <div class="form-row">
+            <div class="col-sm-4">
+                <label for="ddlPrabhag" class="col-form-label">Select Prabhag : </label>
+                <CustomInputSelect id="ddlPrabhag" class="form-control form-control-sm" disabled="@DisablePrabhag"
+                                   ValueChanged="@((int value)=>PrabhagStateHasChanged(value))"
+                                   ValueExpression="@(()=> selectedPrabhagID)"
+                                   Value="@selectedPrabhagID">
+                    <option value="0">--SELECT--</option>
+                    @foreach (var _prabhag in prabhags)
+                    {
+                        @if (_prabhag.EkaiId == selectedPrabhagID)
+                        {
+                            <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                        }
+                        else
+                        {
+                            <option value=@_prabhag.EkaiId>@_prabhag.EkaiName</option>
+                        }
+                    }
+
+                </CustomInputSelect>
+            </div>
+            <div class="col-sm-4">
+                <label for="ddlSambhag" class="col-form-label">Select Sambhag : </label>
+                <CustomInputSelect id="ddlSambhag" class="form-control form-control-sm" disabled="@DisableSambhag"
+                                   ValueChanged="@((int value)=>SambhagStateHasChanged(value))"
+                                   ValueExpression="@(()=> selectedSambhagID)"
+                                   Value="@selectedSambhagID">
+
+                    <option value="0">--SELECT--</option>
+
+                    @foreach (var _data in sambhags)
+                    {
+                        @if (_data.EkaiId == selectedSambhagID)
+                        {
+                            <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                        else
+                        {
+                            <option value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                    }
+
+                </CustomInputSelect>
+            </div>
+            <div class="col-sm-4">
+                <label for="ddlBhag" class="col-form-label">Select Bhag : </label>
+                <CustomInputSelect id="ddlBhag" class="form-control form-control-sm" disabled="@DisableBhag"
+                                   ValueChanged="@((int value)=>BhagStateHasChanged(value))"
+                                   ValueExpression="@(()=> selectedBhagID)"
+                                   Value="@selectedBhagID">
+                    <option value="0">--SELECT--</option>
+
+                    @foreach (var _data in bhags)
+                    {
+                        @if (_data.EkaiId == selectedBhagID)
+                        {
+                            <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                        else
+                        {
+                            <option value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                    }
+
+                </CustomInputSelect>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-sm-4">
+                <label for="ddlAnchal" class="col-form-label">Select Anchal : </label>
+                <CustomInputSelect id="ddlAnchal" class="form-control form-control-sm" disabled="@DisableAnchal"
+                                   ValueChanged="@((int value)=>AnchalStateHasChanged(value))"
+                                   ValueExpression="@(()=> selectedAnchalID)"
+                                   Value="@selectedAnchalID">
+                    <option value="0">--SELECT--</option>
+                    @foreach (var _data in anchals)
+                    {
+                        @if (_data.EkaiId == selectedAnchalID)
+                        {
+                            <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                        else
+                        {
+                            <option value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                    }
+
+                </CustomInputSelect>
+            </div>
+            <div class="col-sm-4">
+                <label for="ddlSanch" class="col-form-label">Select Sanch : </label>
+                <CustomInputSelect id="ddlSanch" class="form-control form-control-sm" disabled="@DisableSanch"
+                                   ValueChanged="@((int value)=>SanchStateHasChanged(value))"
+                                   ValueExpression="@(()=> selectedSanchID)"
+                                   Value="@selectedSanchID">
+                    <option value="0">--SELECT--</option>
+
+                    @foreach (var _data in sanchs)
+                    {
+                        @if (_data.EkaiId == selectedSanchID)
+                        {
+                            <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                        else
+                        {
+                            <option value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                    }
+
+                </CustomInputSelect>
+            </div>
+            <div class="col-sm-4">
+                <label for="ddlGram" class="col-form-label">Select Gram : </label>
+                <CustomInputSelect id="ddlGram" class="form-control form-control-sm" disabled="@DisableGram"
+                                   ValueChanged="@((int value)=>GramStateHasChanged(value))"
+                                   ValueExpression="@(()=> selectedGramID)"
+                                   Value="@selectedGramID">
+                    <option value="0">--SELECT--</option>
+
+                    @foreach (var _data in gramSangathan)
+                    {
+                        @if (_data.EkaiId == selectedGramID)
+                        {
+                            <option selected value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                        else
+                        {
+                            <option value=@_data.EkaiId>@_data.EkaiName</option>
+                        }
+                    }
+
+                </CustomInputSelect>
+            </div>
+        </div>
+
+        <div class="input-group my-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Enter Qty : </label>
+            <input type="text" class="form-control" placeholder="Enter Quantity" @bind="@Qty" />
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Enter Rate : </label>
+            <input type="text" class="form-control" placeholder="Enter Rate" @bind="@Rate" />
+            <label for="inputEmail3" class="col-sm-2 col-form-label">=</label>
+            <input type="text" class="form-control" placeholder="Amount" @bind="@Amount" />
+            <div class="input-group-append">
+                <button @onclick="@Save" class="btn btn-warning">Save</button>
+            </div>
+        </div>
+
+    </EditForm>
 }
+
 
 
 

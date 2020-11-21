@@ -73,16 +73,16 @@ else
 
 
 @code {
-    string itemID;
-    string item;
+        string itemID;
+        string item;
 
-    bool IsProductionRequired = false;
-    Int16 selectUnitID = 0;
-    int totalRecords = 0;
+        bool IsProductionRequired = false;
+        Int16 selectUnitID = 0;
+        int totalRecords = 0;
 
-    List<VItems> items = null;
+        List<VItems> items = null;
 
-    List<MstUnit> units = null;
+        List<MstUnit> units = null;
 
 
     protected override async Task OnInitializedAsync()
@@ -94,7 +94,7 @@ else
     private async Task LoadItemsAsync()
     {
         items = await itemService.GetViewAsync();
-        //StateHasChanged();
+        
         totalRecords = items.Count();
     }
 
@@ -102,29 +102,32 @@ else
     {
         units = await unitService.GetAsync();
         units.Insert(0, new MstUnit { UnitId = 0, Unit = "SELECT" });
-
     }
 
     public async Task Save()
     {
-
         if (selectUnitID == 0)
         {
             toastService.ShowError("Please select Unit.");
         }
         else
         {
-
-            MstItems entity = new MstItems();
-            entity.ItemName = item;
-            entity.UnitId = selectUnitID;
-            entity.IsProductionRequired = IsProductionRequired;
-
-            var response = await itemService.AddAsync(entity);
-            if (response)
+            if (!string.IsNullOrEmpty(item))
             {
-                await LoadItemsAsync();
-                ResetFields();
+                MstItems entity = new MstItems();
+                entity.ItemName = item;
+                entity.UnitId = selectUnitID;
+                entity.IsProductionRequired = IsProductionRequired;
+                entity.CreatedBy = Common.UserProfileID;
+                entity.CreatedDate = DateTime.Now;
+
+                var response = await itemService.AddAsync(entity);
+                if (response)
+                {
+                    await LoadItemsAsync();
+                    StateHasChanged();
+                    ResetFields();
+                }
             }
         }
     }

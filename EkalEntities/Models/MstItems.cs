@@ -17,6 +17,7 @@ namespace EkalEntities.Models
         public int ItemId { get; set; }
         public string ItemName { get; set; }
         public short? UnitId { get; set; }
+        public decimal? SaleRate { get; set; }
         public bool? IsProductionRequired { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }

@@ -7,6 +7,7 @@ namespace EkalEntities.Models
     {
         public TxnCustomer()
         {
+            TxnCustomerDeliveryAddress = new HashSet<TxnCustomerDeliveryAddress>();
             TxnCustomerOrder = new HashSet<TxnCustomerOrder>();
         }
 
@@ -27,6 +28,7 @@ namespace EkalEntities.Models
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
 
+        public virtual ICollection<TxnCustomerDeliveryAddress> TxnCustomerDeliveryAddress { get; set; }
         public virtual ICollection<TxnCustomerOrder> TxnCustomerOrder { get; set; }
     }
 }

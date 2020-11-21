@@ -64,6 +64,7 @@ namespace Ekal_App.CodeBase
         {
             await LoadStatesAsync();
             await LoadVolunteerTypesAsync();
+            await LoadPrabhagsAsync();
         }
 
         protected async Task LoadVolunteerTypesAsync()
@@ -101,14 +102,14 @@ namespace Ekal_App.CodeBase
         protected async Task LoadPrabhagsAsync()
         {
             var allData = await ekaiService.GetAsync();
-            prabhags = allData.Where(x => x.EkaiTypeId == 1).ToList();
+            prabhags = allData.Where(x => x.EkaiTypeId == (int)EkaiTypes.Prabhag).ToList();
             StateHasChanged();
         }
 
         protected async Task LoadSamabhagsAsync(int prabhagID)
         {
             var allData = await ekaiService.GetAsync();
-            sambhags = allData.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == 2).ToList();
+            sambhags = allData.Where(x => x.ParentEkaiId == prabhagID && x.EkaiTypeId == (int)EkaiTypes.Sambhag).ToList();
 
             StateHasChanged();
         }
@@ -116,7 +117,7 @@ namespace Ekal_App.CodeBase
         protected async Task LoadBhagsAsync(int sambhagID)
         {
             var allData = await ekaiService.GetAsync();
-            bhags = allData.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == 3).ToList();
+            bhags = allData.Where(x => x.ParentEkaiId == sambhagID && x.EkaiTypeId == (int)EkaiTypes.Bhag).ToList();
 
             StateHasChanged();
         }
@@ -124,7 +125,7 @@ namespace Ekal_App.CodeBase
         protected async Task LoadAnchalsAsync(int bhagID)
         {
             var allData = await ekaiService.GetAsync();
-            anchals = allData.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == 4).ToList();
+            anchals = allData.Where(x => x.ParentEkaiId == bhagID && x.EkaiTypeId == (int)EkaiTypes.Anchal).ToList();
 
             StateHasChanged();
         }
@@ -132,7 +133,7 @@ namespace Ekal_App.CodeBase
         protected async Task LoadSanchsAsync(int anchalID)
         {
             var allData = await ekaiService.GetAsync();
-            sanchs = allData.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == 5).ToList();
+            sanchs = allData.Where(x => x.ParentEkaiId == anchalID && x.EkaiTypeId == (int)EkaiTypes.Sanch).ToList();
 
             StateHasChanged();
         }
@@ -140,7 +141,7 @@ namespace Ekal_App.CodeBase
         protected async Task LoadGramSangathansAsync(int sanchID)
         {
             var allData = await ekaiService.GetAsync();
-            gramSangathan = allData.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == 6).ToList();
+            gramSangathan = allData.Where(x => x.ParentEkaiId == sanchID && x.EkaiTypeId == (int)EkaiTypes.Gram).ToList();
             StateHasChanged();
         }
 

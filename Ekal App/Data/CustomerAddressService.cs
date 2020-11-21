@@ -7,31 +7,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ekal_App.Data
 {
-    public class ItemFormulaService
+    public class CustomerAddressService
     {
-        public async Task<List<VItemFormula>> GetAsync()
+        public async Task<List<TxnCustomerDeliveryAddress>> GetAsync()
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.VItemFormula.ToListAsync();
+                return await dbContext.TxnCustomerDeliveryAddress.ToListAsync();
             }
         }
 
-        public async Task<TxnItemFormula> GetAsync(int id)
+        public async Task<TxnCustomerDeliveryAddress> GetAsync(int id)
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.TxnItemFormula.Where(x => x.ItemFormulaId == id).FirstOrDefaultAsync();
+                return await dbContext.TxnCustomerDeliveryAddress.Where(x => x.CustomerDeliveryAddressId == id).FirstOrDefaultAsync();
             }
         }
 
-        public async Task<bool> AddAsync(TxnItemFormula entity)
+        public async Task<bool> AddAsync(TxnCustomerDeliveryAddress entity)
         {
             using (EkalContext dbContext = new EkalContext())
             {
                 try
                 {
-                    await dbContext.TxnItemFormula.AddAsync(entity);
+                    await dbContext.TxnCustomerDeliveryAddress.AddAsync(entity);
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -48,8 +48,8 @@ namespace Ekal_App.Data
             {
                 try
                 {
-                    var tmpRecord = await dbContext.TxnItemFormula.Where(x => x.ItemFormulaId == id).FirstOrDefaultAsync();
-                    dbContext.TxnItemFormula.Remove(tmpRecord);
+                    var tmpRecord = await dbContext.TxnCustomerDeliveryAddress.Where(x => x.CustomerDeliveryAddressId == id).FirstOrDefaultAsync();
+                    dbContext.TxnCustomerDeliveryAddress.Remove(tmpRecord);
                     dbContext.SaveChanges();
                     return true;
                 }

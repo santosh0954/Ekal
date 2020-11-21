@@ -9,11 +9,11 @@ namespace Ekal_App.Data
 {
     public class ItemStockService
     {
-        public async Task<List<TxnItemStock>> GetAsync()
+        public async Task<List<VItemStock>> GetAsync()
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.TxnItemStock.ToListAsync();
+                return await dbContext.VItemStock.ToListAsync();
             }
         }
 

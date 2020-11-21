@@ -1,5 +1,7 @@
 ﻿@page "/itemFormulaDetails";
+
 @using EkalEntities.Models;
+@using EkalEntities.CustomModels; 
 @using Ekal_App.Data;
 
 @inject ItemFormulaService formulaService;
@@ -9,7 +11,7 @@
 
 @inject IToastService toastService;
 
-<h3>Formula Details</h3>
+<h3>Add Formula Details</h3>
 <hr />
 
 
@@ -62,16 +64,14 @@ else
     </div>
 
     <div class="mt-3">
-        <DataGrid TItem="TxnItemFormulaDetails" Data="@lstFormulaDetails" Sortable="true" ShowPager="true" PageSize="10" Filterable="true"
-                  Style="overflow-x:scroll" Bordered="true">
+        <DataGrid TItem="FormulaDetails" Data="@lstFormulaDetails" Sortable="true" ShowPager="true" PageSize="10" Style="overflow-x:scroll" Bordered="true">
 
-            <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.ItemFormulaDetailsId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
-            <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.SubItemId)" Caption="Item"></DataGridColumn>
-            <DataGridColumn TItem="TxnItemFormulaDetails" Field="@nameof(TxnItemFormulaDetails.Qty)" Caption="Qty"></DataGridColumn>
+            <DataGridColumn TItem="FormulaDetails" Field="@nameof(FormulaDetails.ItemID)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
+            <DataGridColumn TItem="FormulaDetails" Field="@nameof(FormulaDetails.ItemName)" Caption="Item"></DataGridColumn>
+            <DataGridColumn TItem="FormulaDetails" Field="@nameof(FormulaDetails.Qty)" Caption="Qty"></DataGridColumn>
         </DataGrid>
     </div>
     <button @onclick="@Save" class="btn btn-warning">Save</button>
-
 
 </EditForm>
 }
@@ -83,10 +83,11 @@ else
     int selectedItemID = 0;
     string ItemUnit = string.Empty;
 
-    List<TxnItemFormula> formulas = null;
+    List<VItemFormula> formulas = null;
     List<MstItems> items = null;
 
-    List<TxnItemFormulaDetails> lstFormulaDetails = null;
+    List<TxnItemFormulaDetails> lstTxnFormulaDetails = null;
+    List<FormulaDetails> lstFormulaDetails = new List<FormulaDetails>();
 
     TxnItemFormulaDetails itemFormulaDetails = new TxnItemFormulaDetails();
 
@@ -100,7 +101,7 @@ else
     private async Task LoadItemFormulaAsync()
     {
         formulas = await formulaService.GetAsync();
-        formulas.Insert(0, new TxnItemFormula { ItemFormulaId = 0, FormulaName = "SELECT" });
+        formulas.Insert(0, new VItemFormula { ItemFormulaId = 0, FormulaName = "SELECT" });
 
     }
     private async Task LoadItemsAsync()
@@ -129,7 +130,7 @@ else
     {
         if (lstFormulaDetails != null)
         {
-            var response = await formulaDetailsService.AddRangeAsync(lstFormulaDetails);
+            var response = await formulaDetailsService.AddRangeAsync(lstTxnFormulaDetails);
             if (response)
             {
                 await LoadItemsAsync();
@@ -147,12 +148,16 @@ else
         selectedFormulaID = 0;
         selectedItemID = 0;
         itemQty= 0;
+
+        lstTxnFormulaDetails.Clear();
+        lstFormulaDetails.Clear();
+
     }
 
     public void AddItems()
     {
-        if (lstFormulaDetails == null)
-            lstFormulaDetails = new List<TxnItemFormulaDetails>();
+        if (lstTxnFormulaDetails == null)
+            lstTxnFormulaDetails = new List<TxnItemFormulaDetails>();
 
         if (ValidateFields())
         {
@@ -160,8 +165,19 @@ else
             entity.ItemFormulaId = selectedFormulaID;
             entity.SubItemId = selectedItemID;
             entity.Qty = itemQty;
+            entity.CreatedDate = DateTime.Now;
+            entity.CreatedBy = Common.UserProfileID;
+            lstTxnFormulaDetails.Add(entity);
 
-            lstFormulaDetails.Add(entity);
+
+            FormulaDetails formulaDetails = new FormulaDetails();
+            formulaDetails.ItemID = selectedItemID;
+            formulaDetails.Qty = itemQty;
+            //Getting ItemName
+            var itemName = items.Where(x => x.ItemId == selectedItemID).FirstOrDefault().ItemName;
+            formulaDetails.ItemName = itemName;
+
+            lstFormulaDetails.Add(formulaDetails);
         }
     }
 

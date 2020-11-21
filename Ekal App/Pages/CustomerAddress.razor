@@ -1,0 +1,187 @@
+﻿@page "/customerAddress"
+@using EkalEntities.Models; 
+@using Ekal_App.Data; 
+
+@inject CustomerService customerService;
+@inject CustomerAddressService customerAddressService; 
+@inject StateService stateService;
+@inject DistrictService districtService;
+
+<h3>Customer Address</h3>
+<hr />
+
+<EditForm Model="@deliveryAddress" OnValidSubmit="@Save">
+   
+    <div class="form-group row">
+        <label for="ddlCustomers" class="col-sm-2 col-form-label">Customer : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <CustomInputSelect id="ddlCustomers" class="form-control" @bind-Value="@selectedCustomerID">
+                <option value="00">--SELECT--</option>
+
+                @foreach (var customer in customers)
+                {
+                    @if (customer.CustomerId == selectedCustomerID)
+                    {
+                        <option selected value="@customer.CustomerId">@customer.FirstName @customer.MiddleName @customer.LastName </option>
+                    }
+                    else
+                    {
+                        <option value="@customer.CustomerId">@customer.FirstName @customer.MiddleName @customer.LastName </option>
+                    }
+                }
+
+            </CustomInputSelect>
+            
+        </div>
+    </div>
+    <div class="form-group row" >
+        <label for="ddlAddressType" class="col-sm-2 col-form-label">Address Type : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <CustomInputSelect id="ddlAddressType" class="form-control" @bind-Value="@selectedAddressType">
+                <option value="0">SELECT</option>
+                <option value="H">Home</option>
+                <option value="O">Office</option>
+            </CustomInputSelect>
+        </div>
+    </div>    
+
+    <div class="form-group row">
+        <label for="ddlStates" class="col-sm-2 col-form-label">State : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <CustomInputSelect id="ddlStates" class="form-control"
+                               ValueChanged="@((string value) => StateHasChanged(value))"
+                               ValueExpression="@(() => stateCode)"
+                               Value="@stateCode">
+                <option value="00">--SELECT--</option>
+
+                @foreach (var _state in states)
+                {
+                    @if (_state.StateCode == stateCode)
+                    {
+                        <option selected value="@_state.StateCode">@_state.StateName</option>
+                    }
+                    else
+                    {
+                        <option value=@_state.StateCode>@_state.StateName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+        <label for="ddlDistricts" class="col-lg-3 col-md-3 col-sm-10 col-form-label text-right">District : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <CustomInputSelect id="ddlDistricts" class="form-control" @bind-Value="deliveryAddress.DistrictCode">
+                <option value="0000">--SELECT--</option>
+
+                @foreach (var _district in districts)
+                {
+                    @if (_district.DistrictCode == deliveryAddress.DistrictCode)
+                    {
+                        <option selected value="@_district.DistrictCode">@_district.DistrictName</option>
+                    }
+                    else
+                    {
+                        <option value=@_district.DistrictCode>@_district.DistrictName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Communication : </label>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="addLine1" placeholder="Address Line 1" @bind="@deliveryAddress.AddressLine1">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="addLine2" placeholder="Address Line 2" @bind="@deliveryAddress.AddressLine2">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="addLine3" placeholder="Address Line 3" @bind="@deliveryAddress.AddressLine3">
+        </div>
+    </div>
+    <div class="form-group row">
+
+        <div class="col-lg-3 col-md-3 col-sm-10 offset-2">
+            <input type="text" class="form-control" id="tehsil" placeholder="Tehsil" @bind="@deliveryAddress.Tehsil">
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-10">
+            <input type="text" class="form-control" id="pincode" placeholder="Pincode" @bind="@deliveryAddress.Pincode">
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
+            <button type="submit" class="btn btn-success px-5">Save</button>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    string selectedAddressType = string.Empty;
+    string stateCode =string.Empty;
+    int selectedCustomerID = 0;
+    TxnCustomerDeliveryAddress deliveryAddress = new TxnCustomerDeliveryAddress();
+    List<TxnCustomer> customers = new List<TxnCustomer>();
+
+    List<MstStates> states = new List<MstStates>();
+    List<MstDistricts> districts = new List<MstDistricts>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomerAsyc();
+        await LoadStatesAsync();
+    }
+
+    private async Task LoadCustomerAsyc()
+    {
+        customers = await customerService.GetAsync();
+    }
+
+    private async Task LoadStatesAsync()
+    {
+        states = await stateService.GetAsync();
+    }
+
+    private async Task StateHasChanged(string value)
+    {
+        stateCode = value;
+        if (value == "00")
+            districts.Clear();
+        else
+        {
+            deliveryAddress.StateCode = value;
+            await LoadDistrictsAsync(value);
+        }
+    }
+
+    private async Task LoadDistrictsAsync(string stateCode)
+    {
+        districts = await districtService.GetDistrictByStateCodeAsync(stateCode);
+
+    }
+
+    private async void Save()
+    {
+        deliveryAddress.CustomerId = selectedCustomerID;
+        deliveryAddress.AddressType = selectedAddressType;
+        deliveryAddress.CreatedDate = DateTime.Now;
+        deliveryAddress.CreatedBy = Common.UserProfileID;
+        var result = await customerAddressService.AddAsync(deliveryAddress);
+        if (result)
+        {
+            ResetFields();
+        }
+    }
+
+    private void ResetFields()
+    {
+        deliveryAddress.CustomerId = 0;
+        deliveryAddress.AddressLine1 = string.Empty;
+        deliveryAddress.AddressLine2 = string.Empty;
+        deliveryAddress.AddressLine3 = string.Empty;
+        deliveryAddress.StateCode = "00";
+        deliveryAddress.DistrictCode = "0000";
+        deliveryAddress.Tehsil = string.Empty;
+        deliveryAddress.Pincode = string.Empty;
+    }
+}

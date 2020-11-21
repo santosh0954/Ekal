@@ -44,7 +44,7 @@ namespace Ekal_App.CodeBase
 
         protected TxnItemStock itemStock = new TxnItemStock();
 
-        protected List<TxnItemStock> entities = null;
+        protected List<VItemStock> entities = null;
         protected List<VItemProvider> itemProviders = null;
 
         protected List<MstEkai> prabhags = new List<MstEkai>();
@@ -154,6 +154,10 @@ namespace Ekal_App.CodeBase
             entity.TotalAmount = Amount;
             entity.ItemProviderId = selectedProviderID;
             entity.Status = itemStatus;
+            entity.EkaiId = selectedEkaiID;
+
+            entity.CreatedDate = DateTime.Now;
+            entity.CreatedBy = Common.UserProfileID;
 
             var response = await itemStockService.AddAsync(entity);
             if (response)
@@ -233,7 +237,7 @@ namespace Ekal_App.CodeBase
             selectedItemID = Convert.ToInt32(e.Value);
         }
 
-        void ddlItemStatus_SelectedIndexChanged(ChangeEventArgs e)
+        protected void ddlItemStatus_SelectedIndexChanged(ChangeEventArgs e)
         {
             itemStatus = Convert.ToString(e.Value);
         }

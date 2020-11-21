@@ -3,13 +3,12 @@
 @using Ekal_App.Data;
 @inject EkaiService ekaiService;
 
-
 <h3>Ekai</h3>
 <hr />
 
 @if (entities != null)
 {
-<EditForm Model="@ekai" OnValidSubmit="Save">
+    <EditForm Model="@ekai">
 
     <div class="form-row">
         <label class="mr-2">Select Ekai : </label>
@@ -157,7 +156,7 @@ else
 {
     <div class="align-self-auto">
 
-        <h5 class="text-primary">Total Records : @totalRecords</h5>
+        <h6 class="text-primary text-sm-right">Total Records : @totalRecords</h6>
         <table class="table table-bordered table-hover table-responsive table-striped pre-scrollable">
             <thead>
                 <tr>
@@ -180,6 +179,9 @@ else
                     <td>@entity.Prabhag</td>
                     <td>@entity.Sambhag</td>
                     <td>@entity.Bhag</td>
+                    <td>@entity.Anchal</td>
+                    <td>@entity.Sanch</td>
+                    <td>@entity.Gram</td>
                 </tr>
                 }
             </tbody>
@@ -189,7 +191,7 @@ else
 
 @code {
     string ekaiID;
-    string ekaiName;
+    //string ekaiName;
     string selectedEkai = string.Empty;
     string selectedEkaiName = "Ekai";
     int? selectedParentID = 0;
@@ -282,7 +284,6 @@ else
 
     public async Task Save()
     {
-
         if (selectedParentID == 0)
         {
             Console.WriteLine("Please select appropriate Ekai.");
@@ -312,14 +313,18 @@ else
                     selectedParentID = selectedSanchID;
                     break;
             }
-
-            ekai.ParentEkaiId = selectedParentID;
-
-            var response = await ekaiService.AddAsync(ekai);
-            if (response)
+            if (ValidateFields())
             {
-                await LoadAsync();
-                ResetFields();
+                ekai.ParentEkaiId = selectedParentID;
+                ekai.CreatedDate = DateTime.Now;
+                ekai.CreatedBy = Common.UserProfileID;
+
+                var response = await ekaiService.AddAsync(ekai);
+                if (response)
+                {
+                    await LoadAsync();
+                    ResetFields();
+                }
             }
         }
     }
@@ -327,7 +332,16 @@ else
     private void ResetFields()
     {
         ekaiID = null;
-        ekaiName = string.Empty;
+        //ekaiName = string.Empty;
+        ekai.EkaiName = string.Empty;
+        ekai.EkaiId = 0;
+    }
+
+    private bool ValidateFields()
+    {
+        if (string.IsNullOrEmpty(ekai.EkaiName))
+            return false;
+        return true;
     }
 
     #region Events
@@ -433,5 +447,6 @@ else
     }
 
     #endregion
+
 }
 

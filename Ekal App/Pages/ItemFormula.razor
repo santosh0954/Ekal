@@ -15,52 +15,66 @@
 }
 @if (items != null)
 {
-<EditForm Model="itemFormula">
+    <EditForm Model="itemFormula">
 
-    <div class="form-row">
-        <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label text-right">Formula Name : </label>
-            <input type="text" class="form-control" placeholder="Enter Formula Name" @bind="@itemFormula.FormulaName" />
+        <div class="form-row">
+            <div class="col-sm-4">
+                <label for="inputEmail3" class="col-form-label text-right">Formula Name : </label>
+                <input type="text" class="form-control" placeholder="Enter Formula Name" @bind="@itemFormula.FormulaName" />
+            </div>
         </div>
-     </div>
-    <div class="form-row">
-        <div class="col-sm-4">
-            <label for="ddlItems" class="col-form-label text-right">Item : </label>
-            <CustomInputSelect id="ddlItems" class="form-control" 
-                               ValueChanged="@((int value) => ItemHasChanged(value))"
+        <div class="form-row">
+            <div class="col-sm-4">
+                <label for="ddlItems" class="col-form-label text-right">Item : </label>
+                <CustomInputSelect id="ddlItems" class="form-control"
+                                   ValueChanged="@((int value) => ItemHasChanged(value))"
                                    ValueExpression="@(() => selectedItemID)"
                                    Value="@selectedItemID">
-                @if (items != null)
-                {
-                    @foreach (var _item in items)
+                    @if (items != null)
                     {
-                        <option value=@_item.ItemId>@_item.ItemName</option>
+                        @foreach (var _item in items)
+                        {
+                            <option value=@_item.ItemId>@_item.ItemName</option>
+                        }
                     }
-                }
-            </CustomInputSelect>
-            <label  class="col-form-label text-right">/@ItemUnit</label>
+                </CustomInputSelect>
+                <label class="col-form-label text-right">/@ItemUnit</label>
+            </div>
+
+            <div class="col-sm-4">
+                <label for="inputEmail3" class="col-form-label text-right">For Qty : </label>
+                <input type="text" class="form-control" placeholder="Enter Qty" @bind-value="@itemFormula.ForQty" />
+            </div>
+            <div class="col-sm-4" style="padding-top: 37px">
+
+                <button @onclick="@Save" class="btn btn-warning px-5">Add</button>
+            </div>
         </div>
 
-        <div class="col-sm-4">
-            <label for="inputEmail3" class="col-form-label text-right">For Qty : </label>
-            <input type="text" class="form-control" placeholder="Enter Qty" @bind-value="@itemFormula.ForQty" />
-        </div>
-        <div class="col-sm-4" style="padding-top: 37px">
-            
-            <button @onclick="@Save" class="btn btn-warning px-5">Add</button>
-        </div>
-    </div>
-
-</EditForm>
+    </EditForm>
 }
 
+@if(lstItemFormula!=null)
+{
+    <DataGrid TItem="VItemFormula" Data="@lstItemFormula" Sortable="true" ShowPager="true" PageSize="10" TotalItems="@totalRecords"
+              Style="overflow-x:scroll" Bordered="true">
+
+        <DataGridColumn TItem="VItemFormula" Field="@nameof(VItemFormula.ItemFormulaId)" Caption="ItemFormulaId" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormula" Field="@nameof(VItemFormula.ItemId)" Caption="ItemId" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormula" Field="@nameof(VItemFormula.FormulaName)" Caption="FormulaName"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormula" Field="@nameof(VItemFormula.ItemName)" Caption="Item"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormula" Field="@nameof(VItemFormula.ForQty)" Caption="ForQty"></DataGridColumn>
+
+    </DataGrid>
+}
 
 @code {
 
-    List<TxnItemFormula> lstItemFormula = null;
+    List<VItemFormula> lstItemFormula = null;
     List<MstItems> items = null;
     string ItemUnit = string.Empty;
 
+    int totalRecords = 0;
     int selectedItemID = 0;
 
     TxnItemFormula itemFormula = new TxnItemFormula();
@@ -68,6 +82,7 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadItemsAsync();
+        await LoadItemFormulas();
     }
 
     private async Task LoadItemsAsync()
@@ -92,9 +107,17 @@
     }
 
 
+    private async Task LoadItemFormulas()
+    {
+        lstItemFormula = await itemFormulaService.GetAsync();
+        totalRecords = lstItemFormula.Count;
+    }
+
     public async Task Save()
     {
         itemFormula.ItemId = selectedItemID;
+        itemFormula.CreatedDate = DateTime.Now;
+        itemFormula.CreatedBy = Common.UserProfileID;
 
         var response = await itemFormulaService.AddAsync(itemFormula);
         if (response)

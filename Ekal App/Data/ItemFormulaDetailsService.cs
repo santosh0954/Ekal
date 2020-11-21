@@ -9,11 +9,11 @@ namespace Ekal_App.Data
 {
     public class ItemFormulaDetailsService
     {
-        public async Task<List<TxnItemFormulaDetails>> GetAsync()
+        public async Task<List<VItemFormulaDetails>> GetAsync()
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.TxnItemFormulaDetails.ToListAsync();
+                return await dbContext.VItemFormulaDetails.ToListAsync();
             }
         }
 

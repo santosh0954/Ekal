@@ -9,4 +9,14 @@ namespace Ekal_App
     {
         public static int UserProfileID { get; set; } = 1;
     }
+
+    public enum EkaiTypes
+    {
+        Prabhag = 1,
+        Sambhag,
+        Bhag ,        
+        Anchal ,
+        Sanch ,
+        Gram ,
+    }
 }

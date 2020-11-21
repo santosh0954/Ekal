@@ -1,0 +1,77 @@
+﻿@page "/formulaDetailsList"
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+
+@inject ItemFormulaService  formulaService;
+@inject ItemFormulaDetailsService formulaDetailsService;
+
+<h3>Formula Details</h3>
+<hr />
+
+<EditForm Model="@formulas">
+    <div class="form-row">
+        <div class="col-sm-4">
+            <label for="ddlFormula" class=" col-form-label text-right">Formula : </label>
+            <CustomInputSelect id="ddlFormula" class="form-control"
+                               ValueChanged="@((int value) => FormulaHasChanged(value))"
+                               ValueExpression="@(() => selectedFormulaID)"
+                               Value="@selectedFormulaID">
+                <option value="0">--SELECT--</option>
+
+                @foreach (var formula in formulas)
+                {
+                    @if (formula.ItemFormulaId == selectedFormulaID)
+                    {
+                        <option selected value="@formula.ItemFormulaId">@formula.FormulaName</option>
+                    }
+                    else
+                    {
+                        <option value="@formula.ItemFormulaId">@formula.FormulaName</option>
+                    }
+                }
+
+            </CustomInputSelect>
+        </div>
+    </div>
+</EditForm>
+<div class="mt-3">
+    <DataGrid TItem="VItemFormulaDetails" Data="@lstFormulaDetails" Sortable="true" ShowPager="true" PageSize="10" Style="overflow-x:scroll" Bordered="true">
+
+        <DataGridColumn TItem="VItemFormulaDetails" Field="@nameof(VItemFormulaDetails.ItemFormulaDetailsId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormulaDetails" Field="@nameof(VItemFormulaDetails.ItemFormulaId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormulaDetails" Field="@nameof(VItemFormulaDetails.SubItemId)" Caption="ItemFormulaDetailsId" Displayable="false"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormulaDetails" Field="@nameof(VItemFormulaDetails.ItemName)" Caption="Item"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormulaDetails" Field="@nameof(VItemFormulaDetails.Qty)" Caption="Qty"></DataGridColumn>
+        <DataGridColumn TItem="VItemFormulaDetails" Field="@nameof(VItemFormulaDetails.Unit)" Caption="Unit"></DataGridColumn>
+    </DataGrid>
+</div>
+
+@code {
+
+    int selectedFormulaID = 0;
+    List<VItemFormula> formulas = new List<VItemFormula>();
+    List<VItemFormulaDetails> lstFormulaDetails = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemFormulaAsync();
+    }
+    private async Task LoadItemFormulaAsync()
+    {
+        formulas = await formulaService.GetAsync();
+    }
+
+    private async Task LoadItemFormulaDetailsAsync()
+    {
+        var allformulaDetails = await formulaDetailsService.GetAsync();
+        lstFormulaDetails = allformulaDetails.Where(x => x.ItemFormulaId == selectedFormulaID).ToList();
+        StateHasChanged();
+    }
+
+    private async Task FormulaHasChanged(int value)
+    {
+        selectedFormulaID = value;
+        await LoadItemFormulaDetailsAsync();
+
+    }
+}

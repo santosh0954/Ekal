@@ -1,0 +1,32 @@
+﻿@page "/itemStockStatus"
+@using EkalEntities.Models;
+@using Ekal_App.Data;
+@inject ItemStockService itemStockService;   
+
+<h3>Item Stock Status</h3>
+<hr />
+
+<DataGrid TItem="VItemStock" Data="@lstItemStock" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" TotalItems="@totalRecords"
+          Style="overflow-x:scroll" Bordered="true">
+
+    <DataGridColumn TItem="VItemStock" Field="@nameof(VItemStock.ItemId)" Caption="VolunteerID" Displayable="false"></DataGridColumn>
+    <DataGridColumn TItem="VItemStock" Field="@nameof(VItemStock.ItemName)" Caption="FirstName"></DataGridColumn>
+    <DataGridColumn TItem="VItemStock" Field="@nameof(VItemStock.TotalQty)" Caption="MiddleName"></DataGridColumn>
+    
+</DataGrid>
+
+@code {
+    int totalRecords = 0;
+    List<VItemStock> lstItemStock = new List<VItemStock>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadStockStatusAsync();
+    }
+
+    private async Task LoadStockStatusAsync()
+    {
+        lstItemStock = await itemStockService.GetAsync();
+        totalRecords = lstItemStock.Count;
+    }
+}

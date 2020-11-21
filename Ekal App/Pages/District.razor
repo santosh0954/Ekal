@@ -37,16 +37,18 @@ else
             <thead>
                 <tr>
                     <th class="d-none">DistrictCode</th>
+                    <th>State</th>
                     <th>DistrictName</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var entity in entities)
                 {
-                    <tr>
-                        <td class="d-none">@entity.DistrictCode</td>
-                        <td>@entity.DistrictName</td>
-                    </tr>
+                <tr>
+                    <td class="d-none">@entity.DistrictCode</td>
+                    <td>@entity.StateName</td>
+                    <td>@entity.DistrictName</td>
+                </tr>
                 }
             </tbody>
         </table>
@@ -59,7 +61,7 @@ else
 
     int totalRecords = 0;
 
-    List<MstDistricts> entities = null;
+    List<VDistricts> entities = null;
 
     protected override async Task OnInitializedAsync()
     {

@@ -96,9 +96,12 @@ else
         entity.TaskName = taskName;
         entity.ForItemId = selectedItemID;
         entity.ForQty = qty;
+        entity.WorkType = workType;
         entity.EstimatedStartDate = estimatedStartDate;
         entity.EstimatedEndDate = estimatedEndDate;
 
+        entity.CreatedDate = DateTime.Now;
+        entity.CreatedBy = Common.UserProfileID;
         var response = await taskService.AddAsync(entity);
         if (response)
         {

@@ -10,8 +10,9 @@
 <h3>Customer Order</h3>
 <hr/>
 
-<EditForm Model="customerOrder" OnValidSubmit="Save">
+<EditForm Model="customerOrder" >
     <label for="ddlCustomer">Customer :</label>
+
     <CustomInputSelect id="ddlCustomer" class="form-control"
                        @bind-Value="@selectedCustomerID">
         <option>SELECT</option>
@@ -33,7 +34,7 @@
         <InputDate id="dtOrderDate" @bind-Value="@customerOrder.OrderDate" />
     </div>
     <div class="form-group row">
-        <label for="ddlCustomer">Item :</label>
+        <label for="ddlItem">Item :</label>
         <CustomInputSelect id="ddlItem" @bind-Value="@selectedItemID">
             <option>SELECT</option>
             @foreach (MstItems item in items)
@@ -60,13 +61,18 @@
 
 <div>
     <DataGrid TItem="OrderDetails" Data="@lstOrderDetails" Sortable="true" ShowPager="true" PageSize="10" Filterable="true" Style="overflow-x:scroll" Bordered="true">
-        
+
         <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.ItemName)" Caption="Item"></DataGridColumn>
         <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.Rate)" Caption="Rate"></DataGridColumn>
         <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.Qty)" Caption="Qty"></DataGridColumn>
         <DataGridColumn TItem="OrderDetails" Field="@nameof(OrderDetails.Amount)" Caption="Amount"></DataGridColumn>
 
-    </DataGrid>
+    </DataGrid>   
+</div>
+<div class="form-group row">
+    <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
+        <button @onclick="@Save" class="btn btn-success px-5">Save</button>
+    </div>
 </div>
 
 
@@ -74,7 +80,6 @@
     TxnCustomerOrder customerOrder = new TxnCustomerOrder();
     List<TxnCustomerOrderDetails> lstCustomerOrderDetails = new List<TxnCustomerOrderDetails>();
     List<OrderDetails> lstOrderDetails = new List<OrderDetails>();
-
 
     public int selectedCustomerID { get; set; }
     public int selectedItemID { get; set; }
@@ -87,6 +92,7 @@
     {
         await LoadItems();
         await LoadCustomers();
+        await GetNextOrderNo();
     }
 
     private async Task LoadItems()
@@ -94,11 +100,16 @@
         items = await itemService.GetAsync();
     }
 
+    private async Task GetNextOrderNo()
+    {
+        var orderNo = await orderService.GetNextOrderNoAsync();
+        customerOrder.OrderNo = orderNo;
+    }
+
     private async Task LoadCustomers()
     {
         customers = await customerService.GetAsync();
     }
-
 
     private void AddItem()
     {
@@ -106,12 +117,36 @@
         orderDetail.ItemID = selectedItemID;
         orderDetail.Qty = (short)InputQty;
 
+        //Getting ItemName 
+        var selectedItem = items.Where(x => x.ItemId == selectedItemID).FirstOrDefault();
+        orderDetail.ItemName = selectedItem.ItemName;
+        orderDetail.Rate = (decimal)selectedItem.SaleRate;
+        orderDetail.Amount = (decimal)(orderDetail.Qty * selectedItem.SaleRate);
+
         lstOrderDetails.Add(orderDetail);
         StateHasChanged();
     }
 
-    private void Save()
+    private async void Save()
     {
+        foreach (OrderDetails orderDetail in lstOrderDetails)
+        {
+            TxnCustomerOrderDetails cOrderDetails = new TxnCustomerOrderDetails();
 
+            cOrderDetails.OrderId = customerOrder.CustomerOrderId;
+            cOrderDetails.ItemId = orderDetail.ItemID;
+            cOrderDetails.Qty = (short)orderDetail.Qty;
+            cOrderDetails.Rate = orderDetail.Rate;
+            cOrderDetails.Amount = orderDetail.Amount;
+
+            lstCustomerOrderDetails.Add(cOrderDetails);
+        }
+
+        customerOrder.CustomerId = selectedCustomerID;
+
+        customerOrder.TxnCustomerOrderDetails = lstCustomerOrderDetails;
+        customerOrder.CreatedDate = DateTime.Now;
+        customerOrder.CreatedBy = Common.UserProfileID;
+        var response=await orderService.AddAsync(customerOrder);
     }
 }

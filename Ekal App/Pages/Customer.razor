@@ -5,11 +5,13 @@
 @inject StateService stateService;
 @inject DistrictService districtService;
 
-    <div class="form-group row">
-        <h3>Customer</h3>
-        <h6 style="text-align:justify; vertical-align:bottom">Total Records : @totalRecords </h6>
-    </div>
-    <hr />
+<div class="form-group row">
+    <h3>Customer</h3>
+    <p class="text-primary text-sm-right">Total Records : @totalRecords </p>
+</div>
+    
+<hr />
+
     <EditForm Model="@customer" OnValidSubmit="@Save">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Name : </label>

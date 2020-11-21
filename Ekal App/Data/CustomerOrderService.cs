@@ -9,11 +9,11 @@ namespace Ekal_App.Data
 {
     public class CustomerOrderService
     {
-        public async Task<List<TxnCustomerOrder>> GetAsync()
+        public async Task<List<VCustomerOrderWithDetails>> GetAsync()
         {
             using (EkalContext dbContext = new EkalContext())
             {
-                return await dbContext.TxnCustomerOrder.ToListAsync();
+                return await dbContext.VCustomerOrderWithDetails.ToListAsync();
             }
         }
 
@@ -22,6 +22,21 @@ namespace Ekal_App.Data
             using (EkalContext dbContext = new EkalContext())
             {
                 return await dbContext.TxnCustomerOrder.Where(x => x.CustomerOrderId == id).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<string> GetNextOrderNoAsync()
+        {
+            using (EkalContext dbContext = new EkalContext())
+            {
+                string OrderNoPrefix = "O";
+                var totalOrders = await dbContext.TxnCustomerOrder.CountAsync();
+                if (totalOrders == 0)
+                    OrderNoPrefix = "O001";
+                else
+                    OrderNoPrefix = "O"+(totalOrders+1).ToString().PadLeft(3,'0');
+
+                return OrderNoPrefix;
             }
         }
 
