@@ -51,7 +51,8 @@ namespace EkalEntities.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Ekal;Trusted_Connection=True;");
+                //optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Ekal;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=103.224.247.81;Database=Ekal;user id=ekal; password=ekal@2020");
             }
         }
 
