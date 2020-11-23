@@ -19,7 +19,7 @@ else
                 <Radio TValue="string" Value="@("D")">Donation</Radio>
             </RadioGroup>
         </div>
-        <div class="form-row">
+        <div class="form-row mb-3">
             <div class="col-sm-4">
                 <label for="inputEmail3" class=" col-form-label">Select Provider : </label>
                 <select id="ddlProviders" class="form-control" @onchange="ddlProviders_SelectedIndexChanged">
@@ -59,7 +59,7 @@ else
         </div>
 
         <div class="form-row">
-            <label class="mr-2">Select Ekai : </label>
+            <label class="ml-1 mr-2">Select Ekai : </label>
             <RadioGroup TValue="string" Name="rbtnEkai" Inline="true" CheckedValueChanged="@rbtnEkai_OnCheckedValueChanged">
                 <Radio TValue="string" Value="@("1")">Prabhag</Radio>
                 <Radio TValue="string" Value="@("2")">Sambhag</Radio>
