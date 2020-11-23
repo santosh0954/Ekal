@@ -11,7 +11,9 @@
 <hr/>
 
 <EditForm Model="customerOrder" >
-    <label for="ddlCustomer">Customer :</label>
+    <div class="form-group form-row">
+        <div class="col-sm-3">
+    <label for="ddlCustomer" class="col-form-label">Customer :</label>
 
     <CustomInputSelect id="ddlCustomer" class="form-control"
                        @bind-Value="@selectedCustomerID">
@@ -28,14 +30,22 @@
             }
         }
     </CustomInputSelect>
-    <div class="form-group row">
-        <label for="txtOrderNo">OrderNo :</label>
-        <InputText id="txtOrderNo" @bind-Value="@customerOrder.OrderNo" />
-        <InputDate id="dtOrderDate" @bind-Value="@customerOrder.OrderDate" />
+
+        </div>
+        <div class="col-sm-3">
+        <label for="txtOrderNo" class="col-form-label">OrderNo :</label>
+        <InputText id="txtOrderNo" class="form-control" @bind-Value="@customerOrder.OrderNo" />
+
+        </div>
+        <div class="col-sm-3" style="padding-top: 35px">
+        <InputDate id="dtOrderDate" class="form-control" @bind-Value="@customerOrder.OrderDate" />
+
+        </div>
     </div>
-    <div class="form-group row">
-        <label for="ddlItem">Item :</label>
-        <CustomInputSelect id="ddlItem" @bind-Value="@selectedItemID">
+    <div class="form-group form-row">
+        <div class="col-sm-3">
+        <label for="ddlItem" class="col-form-label">Item :</label>
+        <CustomInputSelect id="ddlItem" @bind-Value="@selectedItemID" class="form-control">
             <option>SELECT</option>
             @foreach (MstItems item in items)
             {
@@ -49,10 +59,15 @@
                 }
             }
         </CustomInputSelect>
-        <label for="txtQty">Qty :</label>
 
-        <InputNumber id="txtQty" @bind-Value="@InputQty" />
-        <div class="col-lg-4 col-md-4 col-sm-10 mx-auto">
+        </div>
+        <div class="col-sm-3">
+        <label for="txtQty" class="col-form-label">Qty :</label>
+
+        <InputNumber id="txtQty" @bind-Value="@InputQty" class="form-control" />
+
+        </div>
+        <div class="col-sm-3" style="padding-top: 35px;">
             <button @onclick="@AddItem" class="btn btn-success px-5">Add</button>
         </div>
     </div>

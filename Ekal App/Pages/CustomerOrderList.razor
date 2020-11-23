@@ -17,10 +17,10 @@ else
 
         <DataGridCommandColumn TItem="VCustomerOrderWithDetails">
             <EditCommandTemplate >
-                <Button Color="Color.Secondary" Clicked="@context.Clicked" >Edit</Button>
+                <Button Color="Color.Secondary" Clicked="@context.Clicked" class="btn-block mb-2" >Edit</Button>
             </EditCommandTemplate>
             <DeleteCommandTemplate>
-                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                <Button Color="Color.Danger" Clicked="@context.Clicked" class="btn-block">Delete</Button>
             </DeleteCommandTemplate>
         </DataGridCommandColumn>
         <DataGridColumn TItem="VCustomerOrderWithDetails" Field="@nameof(VCustomerOrderWithDetails.OrderDetailsId)" Caption="VolunteerID" Displayable="false"></DataGridColumn>
